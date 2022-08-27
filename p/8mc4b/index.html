@@ -1,0 +1,111 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>简单重置JetBrains试用 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="前言 JetBrains公司的IDE十分好用，如Idea、Pycharm等。以前的各种激活方式被相继封杀，现在主要的白嫖方式是通过无限重置试用"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8mc4b/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="简单重置JetBrains试用"><meta property="og:description" content="前言 JetBrains公司的IDE十分好用，如Idea、Pycharm等。以前的各种激活方式被相继封杀，现在主要的白嫖方式是通过无限重置试用"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8mc4b/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-10-16T21:47:44+08:00"><meta property="article:modified_time" content="2021-10-16T21:47:44+08:00"><meta itemprop="name" content="简单重置JetBrains试用"><meta itemprop="description" content="前言 JetBrains公司的IDE十分好用，如Idea、Pycharm等。以前的各种激活方式被相继封杀，现在主要的白嫖方式是通过无限重置试用"><meta itemprop="datePublished" content="2021-10-16T21:47:44+08:00"><meta itemprop="dateModified" content="2021-10-16T21:47:44+08:00"><meta itemprop="wordCount" content="1013"><meta itemprop="keywords" content><meta name="twitter:card" content="summary"><meta name="twitter:title" content="简单重置JetBrains试用"><meta name="twitter:description" content="前言 JetBrains公司的IDE十分好用，如Idea、Pycharm等。以前的各种激活方式被相继封杀，现在主要的白嫖方式是通过无限重置试用"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">简单重置JetBrains试用</h1><div class="post-meta"><span class="post-time">2021-10-16</span>
+<span class="more-meta">约 1013 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#前言">前言</a></li><li><a href="#原理">原理</a></li><li><a href="#实现">实现</a></li><li><a href="#自动执行">自动执行</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="前言">前言</h2><p>JetBrains公司的IDE十分好用，如Idea、Pycharm等。以前的各种激活方式被相继封杀，现在主要的白嫖方式是通过无限重置试用来实现的。（其实还是有永久激活的，关键词：<code>FineAgent</code>）</p><p>那么，无限重置试用是怎么做的呢？有没有不装插件一键全部重置试用的方式呢？</p><h2 id="原理">原理</h2><p>JetBrains的重置试用来自<a href="https://zhile.io/2020/11/18/jetbrains-eval-reset-da33a93d.html">Jetbrains系列产品重置试用方法 | 知了</a>，主要是需要安装<code>IDE Eval Reset</code>插件，插件源码：<a href="https://gitee.com/pengzhile/ide-eval-resetter">ide-eval-resetter: Reset your IDE eval information.</a>。</p><p>自JetBrains 2020版本，IDE的试用key保存在用户目录下的 AppData\Roaming\JetBrains&lt;IDE名称>\eval 目录下，以<code>.evaluation.key</code>结尾。这是个非常小的文件，只有8字节，内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">&gt;</span> <span class="n">xxd</span> <span class="p">.\</span><span class="n">CLion212</span><span class="p">.</span><span class="n">evaluation</span><span class="p">.</span><span class="n">key</span>
+</span></span><span class="line"><span class="cl"><span class="n">00000000</span><span class="err">:</span> <span class="n">ffff</span> <span class="n">fe83</span> <span class="n">76f7</span> <span class="n">f9b6</span>                      <span class="p">....</span><span class="n">v</span><span class="p">...</span>
+</span></span></code></pre></td></tr></table></div></div><p>16进制的<code>ffff fe83 76f7 f9b6</code>经过转为二进制，再取反，再转成十进制，其实就是试用时的时间戳（毫秒为单位），转换过程如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">16进制         ffff fe83 76f7 f9b6
+</span></span><span class="line"><span class="cl">==&gt; 二进制     1111111111111111111111101000001101110110111101111111100000000000
+</span></span><span class="line"><span class="cl">==&gt; 取反       0000000000000000000000010111110010001001000010000000011111111111
+</span></span><span class="line"><span class="cl">==&gt; 转成十进制  1634386577407
+</span></span><span class="line"><span class="cl">==&gt; 转成时间    2021-10-16 20:16:17
+</span></span></code></pre></td></tr></table></div></div><p>那么，对于重置试用，只需要把新的值按照上面的转换规则写到key文件即可。</p><h2 id="实现">实现</h2><p>在了解上面的原理后，实现起来其实不难，只要把新的时间戳按位取反再以二进制写到key文件即可。</p><p>考虑到用Golang写能直接编译成可执行文件，同时为了练习，这里给出个Golang实现的版本，方便Windows编译成exe，通过其它方式实现也是非常简单的。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;bytes&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;encoding/binary&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;path/filepath&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">home</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;userprofile&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pattern</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">home</span><span class="p">,</span> <span class="s">&#34;AppData&#34;</span><span class="p">,</span> <span class="s">&#34;Roaming&#34;</span><span class="p">,</span> <span class="s">&#34;JetBrains&#34;</span><span class="p">,</span> <span class="s">&#34;*&#34;</span><span class="p">,</span> <span class="s">&#34;eval&#34;</span><span class="p">,</span> <span class="s">&#34;*.evaluation.key&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">evalKey</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nf">Glob</span><span class="p">(</span><span class="nx">pattern</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">fp</span> <span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">fp</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">key</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">evalKey</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">buf</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fp</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">target</span> <span class="o">:=</span> <span class="p">^</span><span class="nb">uint64</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">binary</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span><span class="p">,</span> <span class="nx">binary</span><span class="p">.</span><span class="nx">BigEndian</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fp</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>为了方便在MacOS上使用，再给出一个Python实现的版本：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/python3</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&#34;HOME&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">pattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&#34;Library&#34;</span><span class="p">,</span> <span class="s2">&#34;Application Support&#34;</span><span class="p">,</span> <span class="s2">&#34;JetBrains&#34;</span><span class="p">,</span> <span class="s2">&#34;*&#34;</span><span class="p">,</span> <span class="s2">&#34;eval&#34;</span><span class="p">,</span> <span class="s2">&#34;*.evaluation.key&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">target</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;q&#39;</span><span class="p">,</span> <span class="n">target</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="自动执行">自动执行</h2><p>如果手动执行的话自然还是比较麻烦的，所以可以新建一个任务计划自动执行。打开任务计划程序，新建一个任务计划，操作选择上面编译出来的可执行文件，至于触发器，考虑到我一般0点的时候开着电脑，这里选择每天0点执行。</p><p>配置好后，就能每天定时自动重置JetBrains试用了，并且不需要一个个IDE去安装<code>IDE Eval Reset</code>插件，也不需要重启IDE：试用到期后，选择“Add New License”再选择试用，即可让IDE重新加载key文件。</p></div><footer class="post-footer"><nav class="post-nav"><a class="prev" href="/p/8md9t/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">《Netty实战》读书笔记——Netty的概念及体系结构</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8isgd/"><span class="next-text nav-default">WiFi网络频段优化设置</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

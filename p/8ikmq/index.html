@@ -1,0 +1,114 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>《Java NIO系列教程》学习笔记 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="Java NIO 由以下几个核心部分组成： Channels Buffers Selectors Channel FileChannel：从文件中读写数据 DatagramChannel：能通过UDP读写网络中的数据 So"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8ikmq/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="《Java NIO系列教程》学习笔记"><meta property="og:description" content="Java NIO 由以下几个核心部分组成： Channels Buffers Selectors Channel FileChannel：从文件中读写数据 DatagramChannel：能通过UDP读写网络中的数据 So"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8ikmq/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-06-16T23:14:54+08:00"><meta property="article:modified_time" content="2021-06-16T23:14:54+08:00"><meta itemprop="name" content="《Java NIO系列教程》学习笔记"><meta itemprop="description" content="Java NIO 由以下几个核心部分组成： Channels Buffers Selectors Channel FileChannel：从文件中读写数据 DatagramChannel：能通过UDP读写网络中的数据 So"><meta itemprop="datePublished" content="2021-06-16T23:14:54+08:00"><meta itemprop="dateModified" content="2021-06-16T23:14:54+08:00"><meta itemprop="wordCount" content="1746"><meta itemprop="keywords" content="Java,NIO,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="《Java NIO系列教程》学习笔记"><meta name="twitter:description" content="Java NIO 由以下几个核心部分组成： Channels Buffers Selectors Channel FileChannel：从文件中读写数据 DatagramChannel：能通过UDP读写网络中的数据 So"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">《Java NIO系列教程》学习笔记</h1><div class="post-meta"><span class="post-time">2021-06-16</span>
+<span class="more-meta">约 1746 字</span>
+<span class="more-meta">预计阅读 4 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#channel">Channel</a></li><li><a href="#buffer">Buffer</a><ul><li><a href="#buffer的capacityposition和limit">Buffer的capacity,position和limit</a></li></ul></li><li><a href="#scattergather">Scatter/Gather</a></li><li><a href="#selector">Selector</a><ul><li><a href="#selectedkeys">selectedKeys()</a></li></ul></li><li><a href="#pipe">Pipe</a></li><li><a href="#参考">参考</a></li></ul></li></ul></nav></div></div><div class="post-content"><p>Java NIO 由以下几个核心部分组成：</p><ul><li>Channels</li><li>Buffers</li><li>Selectors</li></ul><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8ikmq/1623857568.jpg" alt="channel与buffer"></p><h2 id="channel">Channel</h2><ul><li><code>FileChannel</code>：从文件中读写数据</li><li><code>DatagramChannel</code>：能通过UDP读写网络中的数据</li><li><code>SocketChannel</code>：能通过TCP读写网络中的数据</li><li><code>ServerSocketChannel</code>：可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel</li></ul><h2 id="buffer">Buffer</h2><p>使用Buffer读写数据一般遵循以下四个步骤：</p><ol><li><p>写入数据到Buffer</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 读取channel中的数据到buf中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">bytesRead</span> <span class="o">=</span> <span class="n">inChannel</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 直接向buf写入数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">buf</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">127</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>调用<code>flip()</code>方法</p></li><li><p>从Buffer中读取数据</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 将buf中的数据写入到channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">bytesWritten</span> <span class="o">=</span> <span class="n">inChannel</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 直接从buf读取数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">byte</span> <span class="n">aByte</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>调用<code>clear()</code>方法或者<code>compact()</code>方法</p></li></ol><h3 id="buffer的capacityposition和limit">Buffer的capacity,position和limit</h3><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8ikmq/1623861730.png" alt="screenshot-20210617004210"></p><p><strong>capacity</strong></p><p>容量</p><p><strong>position</strong></p><p>当将Buffer从写模式切换到读模式，position会被重置为0。当从Buffer的position处读取数据时，position向前移动到下一个可读的位置。</p><p><strong>limit</strong></p><p>写模式下，limit等于Buffer的capacity；读模式下，limit表示最多能读到的位置。当切换Buffer到读模式时，limit会被设置成写模式下的position值。</p><p><code>Buffer.rewind()</code>将position设回0，所以你可以重读Buffer中的所有数据。</p><p>通过调用<code>Buffer.mark()</code>方法，可以标记Buffer中的一个特定position。之后可以通过调用<code>Buffer.reset()</code>方法恢复到这个position。</p><h2 id="scattergather">Scatter/Gather</h2><p>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">channel</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">bufferArray</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel 将多个Buffer中的数据“聚集（gather）”后发送到Channel。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">channel</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bufferArray</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="selector">Selector</h2><p>通过调用<code>Selector.open()</code>方法创建一个Selector：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="o">/</span> <span class="n">创建Selector</span>
+</span></span><span class="line"><span class="cl"><span class="n">Selector</span> <span class="n">selector</span> <span class="o">=</span> <span class="n">Selector</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div></div><p>为了将Channel和Selector配合使用，必须将channel注册到selector上：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">SocketChannel</span> <span class="n">channel</span> <span class="o">=</span> <span class="n">SocketChannel</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">channel</span><span class="o">.</span><span class="na">configureBlocking</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">SelectionKey</span> <span class="n">key</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">selector</span><span class="o">,</span> <span class="n">SelectionKey</span><span class="o">.</span><span class="na">OP_READ</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意register()方法的第二个参数。这是一个“interest集合”，意思是在通过Selector监听Channel时对什么事件感兴趣。可以监听四种不同类型的事件：</p><ol><li>Connect</li><li>Accept</li><li>Read</li><li>Write</li></ol><p>如果你对不止一种事件感兴趣，那么可以用“位或”操作符将常量连接起来。</p><p>可以将一个对象或者更多信息附着到SelectionKey上，这样就能方便的识别某个给定的通道。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">selectionKey</span><span class="o">.</span><span class="na">attach</span><span class="o">(</span><span class="n">theObject</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Object</span> <span class="n">attachedObj</span> <span class="o">=</span> <span class="n">selectionKey</span><span class="o">.</span><span class="na">attachment</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>select()</code>方法返回的int值表示有多少通道已经就绪。亦即，自上次调用<code>select()</code>方法后有多少通道变成就绪状态。</p><h3 id="selectedkeys">selectedKeys()</h3><p>一旦调用了<code>select()</code>方法，并且返回值表明有一个或更多个通道就绪了，然后可以通过调用selector的<code>selectedKeys()</code>方法，访问“已选择键集（selected key set）”中的就绪通道。可以遍历这个已选择的键集合来访问就绪的通道。</p><p>注意每次迭代末尾的<code>keyIterator.remove()</code>调用。Selector不会自己从已选择键集中移除SelectionKey实例。必须在处理完通道时自己移除。下次该通道变成就绪时，Selector会再次将其放入已选择键集中。</p><p><code>SelectionKey.channel()</code>方法返回的通道需要转型成你要处理的类型，如<code>ServerSocketChannel</code>或<code>SocketChannel</code>等。</p><h2 id="pipe">Pipe</h2><p>Java NIO 管道是2个线程之间的单向数据连接。<code>Pipe</code>有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 创建管道
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Pipe</span> <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipe</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// sink通道
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Pipe</span><span class="o">.</span><span class="na">SinkChannel</span> <span class="n">sink</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="na">sink</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 准备缓冲区，并向缓冲区写入数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ByteBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">ByteBuffer</span><span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="n">1024</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// bytes -&gt; buf
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">buf</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;hello world!&#34;</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="n">buf</span><span class="o">.</span><span class="na">flip</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//          buf -&gt; channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">while</span> <span class="o">(</span><span class="n">buf</span><span class="o">.</span><span class="na">hasRemaining</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sink</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// source通道
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Pipe</span><span class="o">.</span><span class="na">SourceChannel</span> <span class="n">source</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="na">source</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// channel -&gt; buf
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">buf</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 读取数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">source</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">buf</span><span class="o">.</span><span class="na">flip</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//            buf -&gt; print
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">while</span> <span class="o">(</span><span class="n">buf</span><span class="o">.</span><span class="na">hasRemaining</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">((</span><span class="kt">char</span><span class="o">)</span> <span class="n">buf</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="参考">参考</h2><ul><li><a href="http://ifeve.com/overview/">Java NIO系列教程（一） Java NIO 概述 | 并发编程网 – ifeve.com</a></li><li><a href="http://tutorials.jenkov.com/java-nio/overview.html">Java NIO Overview</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/java/">Java</a>
+<a href="/tags/nio/">NIO</a></div><nav class="post-nav"><a class="prev" href="/p/8isgd/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">WiFi网络频段优化设置</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8dxvk/"><span class="next-text nav-default">LockSupport源码分析</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

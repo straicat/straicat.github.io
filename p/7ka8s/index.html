@@ -1,0 +1,160 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>线性最小二乘法推导 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="代数形式 最小二乘法在中学时讲过。有一些散点有线性的趋势，用一个一次函数去拟合，使得差距最小化。 假设数据点为 $(x_1, y_1), (x_2, y_2),\dots,(x_m, y_m)$ ，使用如下一次函数去拟合"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7ka8s/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="线性最小二乘法推导"><meta property="og:description" content="代数形式 最小二乘法在中学时讲过。有一些散点有线性的趋势，用一个一次函数去拟合，使得差距最小化。 假设数据点为 $(x_1, y_1), (x_2, y_2),\dots,(x_m, y_m)$ ，使用如下一次函数去拟合"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7ka8s/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-06-02T00:28:00+08:00"><meta property="article:modified_time" content="2018-06-02T00:28:00+08:00"><meta itemprop="name" content="线性最小二乘法推导"><meta itemprop="description" content="代数形式 最小二乘法在中学时讲过。有一些散点有线性的趋势，用一个一次函数去拟合，使得差距最小化。 假设数据点为 $(x_1, y_1), (x_2, y_2),\dots,(x_m, y_m)$ ，使用如下一次函数去拟合"><meta itemprop="datePublished" content="2018-06-02T00:28:00+08:00"><meta itemprop="dateModified" content="2018-06-02T00:28:00+08:00"><meta itemprop="wordCount" content="1216"><meta itemprop="keywords" content="AI,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="线性最小二乘法推导"><meta name="twitter:description" content="代数形式 最小二乘法在中学时讲过。有一些散点有线性的趋势，用一个一次函数去拟合，使得差距最小化。 假设数据点为 $(x_1, y_1), (x_2, y_2),\dots,(x_m, y_m)$ ，使用如下一次函数去拟合"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">线性最小二乘法推导</h1><div class="post-meta"><span class="post-time">2018-06-02</span>
+<span class="more-meta">约 1216 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#代数形式">代数形式</a></li><li><a href="#矩阵形式">矩阵形式</a><ul><li><a href="#预备知识">预备知识</a></li><li><a href="#计算过程">计算过程</a></li></ul></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="代数形式">代数形式</h2><p>最小二乘法在中学时讲过。有一些散点有线性的趋势，用一个一次函数去拟合，使得差距最小化。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7ka8s/1527870525.jpg" alt></p><p>假设数据点为 $(x_1, y_1), (x_2, y_2),\dots,(x_m, y_m)$ ，使用如下一次函数去拟合：</p><div>$$
+y = w_1 x + w_0
+$$</div><p>对于 $x_i$ ，采用上述函数计算出的结果记为 $\hat{y_i}$ ，即：</p><div>$$
+\hat{y_i} = w_1 x_i+w_0
+$$</div><p>定义差距为：</p><div>$$
+\sum_{i=1}^m (y_i - \hat{y_i})^2
+$$</div><p>现需要最小化这个差距。显然，上式为关于 $w_0$ 和 $w_1$ 的函数（损失函数）。为了方便，将 $\sum\limits_{i=1}^m$ 简记为 $\sum$ ，记：</p><div>$$
+\begin{split}
+f(w_0, w_1) &= \sum (y_i - \hat{y_i})^2 \\
+   &= \sum (y_i - (w_1 x_i + w_0))^2 \\
+&= \sum (y_i^2 - 2y_ix_iw_1 - 2y_iw_0 + x_i^2w_1^2 + w_0^2 + 2x_iw_0w_1) \\
+\end{split}
+$$</div><p>分别对 $w_0, w_1$ 求偏导：</p><div>$$
+\begin{split}
+\frac {\partial f} {\partial w_0} &= \sum (-2y_i + 2w_0 + 2x_iw_1) \\
+&= -2 \sum {y_i} + 2mw_0 + 2w_1 \sum {x_i} \\
+\frac {\partial f} {\partial w_1} &= \sum (-2x_iy_i + 2x_i^2w_1 + 2w_0x_i) \\
+&= -2\sum{x_iy_i} + 2w_1\sum {x_i^2} + 2w_0\sum {x_i} \\
+\end{split}
+$$</div><p>令：</p><div>$$
+\begin{split}
+\frac {\partial f} {\partial w_0} &= 0 \\
+\frac {\partial f} {\partial w_1} &= 0 \\
+\end{split}
+$$</div><p>得：</p><div>$$
+\begin{split}
+mw_0 + w_1\sum{x_i} &= \sum{y_i} \\
+w_1\sum{x_i^2} + w_0\sum{x_i} &= \sum{x_i}{y_i} \\
+\end{split}
+$$</div><p>联立上面两式可得：</p><div>$$
+\begin{split}
+w_0 &= \frac {\sum{x_i}\sum{x_i y_i} - \sum{y_i}\sum{x_i^2}} {(\sum{x_i})^2 - m\sum{x_i^2}} \\
+w_1 &= \frac {\sum{x_i}\sum{y_i} - m\sum{x_i y_i}} {(\sum{x_i})^2 - m\sum{x_i^2}} \\
+\end{split}
+$$</div><p>注意， $\sum{x_i^2} \ne (\sum{x_i})^2$ ，计算时要细心。</p><h2 id="矩阵形式">矩阵形式</h2><p>记 $\mathbf{X}$ 为 $m\times n$ 的矩阵，表示有 $m$ 个样本点，特征维数为 $n$ 维； $\mathbf{y}$ 为 $m$ 维列向量，表示这 $m$ 个样本点的实际值； $\mathbf{\hat{y}}$ 为 $m$ 维列向量，表示这 $m$ 个样本点的估计值； $\mathbf{w}$ 为 $n$ 维列向量，且：</p><div>$$
+\mathbf{\hat{y}} = \mathbf{X}\mathbf{w}
+$$</div><p>则：</p><div>$$
+\mathbf{y} - \mathbf{\hat{y}} = \mathbf{y} - \mathbf{X}\mathbf{w}
+$$</div><p>上式的结果是一个列向量，而我们需要的是其平方和。根据矩阵乘法的定义，损失函数为：</p><div>$$
+f(\mathbf{w}) = (\mathbf{y} - \mathbf{X}\mathbf{w})^{\rm T}(\mathbf{y} - \mathbf{X}\mathbf{w})
+$$</div><p>现要求 $\frac {\partial f} {\partial \mathbf{w}}$ ，可 $\mathbf{w}$ 是个向量呀，这个该怎么求呢？</p><h3 id="预备知识">预备知识</h3><p><strong>【实数值函数对向量求导】</strong></p><div>$$
+\frac {\partial f} {\partial \mathbf{x}} =
+\begin{bmatrix}
+\frac{\partial f}{x_1} & \frac{\partial f}{x_2} & \dots & \frac{\partial f}{x_n} \\
+\end{bmatrix}
+$$</div><p>其中， $\mathbf{x}= \left[x_1, x_2, \dots, x_n\right]^{\rm T}$ 为 $n$ 维列向量， $f$ 是 $\mathbf{x}$ 上 $\Re^n \to \Re$ 的函数（也就是， $f$ 的输入是 $n$ 维列向量，输出是实数）</p><p><strong>【向量值函数对向量求导】</strong></p><div>$$
+\frac {\partial \mathbf{y}} {\partial \mathbf{x}} =
+\begin{bmatrix}
+\frac{\partial{y_1}}{\partial x_1} & \frac{\partial{y_1}}{\partial x_2} & \dots & \frac{\partial{y_1}}{\partial x_n} \\
+\frac{\partial{y_2}}{\partial x_1} & \frac{\partial{y_2}}{\partial x_2} & \dots & \frac{\partial{y_2}}{\partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial{y_m}}{\partial x_1} & \frac{\partial{y_m}}{\partial x_2} & \dots & \frac{\partial{y_m}}{\partial x_n} \\
+\end{bmatrix}
+$$</div><p>即：</p><div>$$
+(\frac {\partial \mathbf{y}} {\partial \mathbf{x}})_{ij} = \frac{\partial{y_i}}{\partial x_j}
+$$</div><p>其中， $\mathbf{x}= \left[x_1, x_2, \dots, x_n\right]^{\rm T}$ 为 $n$ 维列向量， $\mathbf{y}$ 是定义在 $\mathbf{x}$ 上 $\Re^n \to \Re^m$ 的函数（也就是， $\mathbf{y}$ 的输入是 $n$ 维列向量，输出是 $m$ 维列向量），上面的矩阵称为<strong>雅可比（Jacobi）矩阵</strong>。</p><p><strong>【链式求导】</strong></p><p>设 $\mathbf{x}$ 为列向量，复合函数 $\mathbf{h(\mathbf{x}) = \mathbf{f(\mathbf{g(\mathbf{x})})}}$ ，其中向量值函数（也就是函数的值域是向量）$\mathbf{f(\mathbf{g})}$ 和 $\mathbf{g(\mathbf{x})}$ 均可微，则：</p><div>$$
+\mathbf{h}^\prime(\mathbf{x}) = \mathbf{f}^\prime(\mathbf{g(\mathbf{x})})\mathbf{g}^\prime(\mathbf{x})
+$$</div><p>和代数形式的链式求导类似。</p><h3 id="计算过程">计算过程</h3><p>记 $\mathbf{u(\mathbf{w})} = \mathbf{y} - \mathbf{X}\mathbf{w}$ ，则：</p><div>$$
+\begin{split}
+f &= \mathbf{u}^{\rm T} \mathbf{u} \\
+&= \sum\nolimits_i {u_i^2} \\
+\end{split}
+$$</div><div>$$
+\begin{split}
+\frac {\partial f} {\partial \mathbf{u}}
+&=
+\begin{bmatrix}
+\frac {\partial {\sum\nolimits_i {u_i^2}}} {\partial {u_1}} & \frac {\partial {\sum\nolimits_i {u_i^2}}} {\partial {u_2}} & \dots & \frac {\partial {\sum\nolimits_i {u_i^2}}} {\partial {u_i}} \\
+\end{bmatrix} \\
+&=
+\begin{bmatrix}
+2u_1 & 2u_2 & \dots & 2u_i
+\end{bmatrix} \\
+&= 2
+\begin{bmatrix}
+u_1 & u_2 & \dots & u_i
+\end{bmatrix} = 2 \mathbf{u}^{\rm T}\\
+\end{split}
+$$</div><div>$$
+\begin{split}
+\mathbf{u} &= \mathbf{y} - \mathbf{X}\mathbf{w} \\
+&=
+\begin{bmatrix}
+y_1 \\ y_2 \\ \vdots \\ y_m \\
+\end{bmatrix} -
+\begin{bmatrix}
+x_{11} & x_{12} & \dots & x_{1n} \\
+x_{21} & x_{22} & \dots & x_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{m1} & x_{m2} & \dots & x_{mn} \\
+\end{bmatrix}
+\begin{bmatrix}
+w_1 \\ w_2 \\ \vdots \\ w_n \\
+\end{bmatrix} \\
+&=
+\begin{bmatrix}
+y_1 - \sum {x_{1i}w_i} \\
+y_2 - \sum {x_{2i}w_i} \\
+\vdots \\
+y_m - \sum {x_{mi}w_i} \\
+\end{bmatrix}
+\\
+\end{split}
+$$</div><div>$$
+\begin{split}
+(\frac{\partial {\mathbf{u}}}{\partial {\mathbf{w}}})_{ij} &= \frac{\partial u_i}{\partial w_j} \\
+&= \frac{\partial (y_i - (x_{i1}w_1 + x_{i2}w_2 + \dots + x_{in}w_n))}{\partial w_j} \\
+&= -x_{ij}
+\end{split}
+$$</div><div>$$
+\frac{\partial \mathbf{u}}{\partial \mathbf{w}} = - \mathbf{X}
+$$</div><p>使用链式求导：</p><div>$$
+\begin{split}
+\frac {\partial f} {\partial {\mathbf{w}}} &= \frac {\partial f} {\partial \mathbf{u}} \frac {\partial \mathbf{u}} {\partial \mathbf{w}} \\
+&= 2 \mathbf{u}^{\rm T} (- \mathbf{X}) \\
+&= -2(\mathbf{y} - \mathbf{X}\mathbf{w})^{\rm T}\mathbf{X} \\
+&= -2 (\mathbf{y}^{\rm T} - (\mathbf{X}\mathbf{w})^{\rm T})\mathbf{X} \\
+&= -2 (\mathbf{y}^{\rm T} - \mathbf{w}^{\rm T}\mathbf{X}^{\rm T}) \mathbf{X} \\
+&= -2 (\mathbf{y}^{\rm T}\mathbf{X} - \mathbf{w}^{\rm T}\mathbf{X}^{\rm T}\mathbf{X})
+\end{split}
+$$</div><p>令：</p><div>$$
+\frac{\partial f}{\partial \mathbf{w}} = \mathbf{0}
+$$</div><p>得：</p><div>$$
+\mathbf{w}^{\rm T}\mathbf{X}^{\rm T}\mathbf{X} = \mathbf{y}^{\rm T}\mathbf{X}
+$$</div><p>若 $\mathbf{X}^{\rm T}\mathbf{X}$ 可逆，则两边同时右乘 $(\mathbf{X}^{\rm T}\mathbf{X})^{-1}$ ，得：</p><div>$$
+\mathbf{w}^{\rm T} = \mathbf{y}^{\rm T}\mathbf{X}(\mathbf{X}^{\rm T}\mathbf{X})^{-1}
+$$</div><p>两边同时转置：</p><div>$$
+\begin{split}
+\mathbf{w} &= (\mathbf{y}^{\rm T}\mathbf{X}(\mathbf{X}^{\rm T}\mathbf{X})^{-1})^{\rm T} \\
+&= ((\mathbf{X}^{\rm T}\mathbf{X})^{-1})^{\rm T}\mathbf{X}^{\rm T}(\mathbf{y}^{\rm T})^{\rm T} \\
+&= ((\mathbf{X}^{\rm T}\mathbf{X})^{\rm T})^{-1}\mathbf{X}^{\rm T}\mathbf{y} \\
+&= (\mathbf{X}^{\rm T}(\mathbf{X}^{\rm T})^{\rm T})^{-1}\mathbf{X}^{\rm T}\mathbf{y} \\
+&= (\mathbf{X}^{\rm T}\mathbf{X})^{-1}\mathbf{X}^{\rm T}\mathbf{y} \\
+\end{split}
+$$</div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/ai/">AI</a></div><nav class="post-nav"><a class="prev" href="/p/7kemt/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">向量微积分基础</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7k91v/"><span class="next-text nav-default">解决Dia在Linux上的输入法问题</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script type="text/javascript">window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

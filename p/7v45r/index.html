@@ -1,0 +1,119 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>使用fail2ban防范Linux服务器SSH暴力登录尝试攻击 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="今天偶然看了下服务器上的日志，结果发现有人在暴力尝试SSH登录： 因为服务器是实验室内部使用，只有校园网才能连接，所以在服务器的安全上就没怎么"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7v45r/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="使用fail2ban防范Linux服务器SSH暴力登录尝试攻击"><meta property="og:description" content="今天偶然看了下服务器上的日志，结果发现有人在暴力尝试SSH登录： 因为服务器是实验室内部使用，只有校园网才能连接，所以在服务器的安全上就没怎么"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7v45r/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-05-18T22:39:00+08:00"><meta property="article:modified_time" content="2019-05-18T22:39:00+08:00"><meta itemprop="name" content="使用fail2ban防范Linux服务器SSH暴力登录尝试攻击"><meta itemprop="description" content="今天偶然看了下服务器上的日志，结果发现有人在暴力尝试SSH登录： 因为服务器是实验室内部使用，只有校园网才能连接，所以在服务器的安全上就没怎么"><meta itemprop="datePublished" content="2019-05-18T22:39:00+08:00"><meta itemprop="dateModified" content="2019-05-18T22:39:00+08:00"><meta itemprop="wordCount" content="2112"><meta itemprop="keywords" content="Linux,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用fail2ban防范Linux服务器SSH暴力登录尝试攻击"><meta name="twitter:description" content="今天偶然看了下服务器上的日志，结果发现有人在暴力尝试SSH登录： 因为服务器是实验室内部使用，只有校园网才能连接，所以在服务器的安全上就没怎么"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">使用fail2ban防范Linux服务器SSH暴力登录尝试攻击</h1><div class="post-meta"><span class="post-time">2019-05-18</span>
+<span class="more-meta">约 2112 字</span>
+<span class="more-meta">预计阅读 5 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#fail2ban">fail2ban</a><ul><li><a href="#安装">安装</a></li><li><a href="#配置">配置</a></li><li><a href="#命令行">命令行</a></li><li><a href="#注意事项">注意事项</a></li><li><a href="#iptables">iptables</a></li></ul></li><li><a href="#参考文献">参考文献</a></li></ul></li></ul></nav></div></div><div class="post-content"><p>今天偶然看了下服务器上的日志，结果发现有人在暴力尝试SSH登录：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7v45r/1558190365.png" alt></p><p>因为服务器是实验室内部使用，只有校园网才能连接，所以在服务器的安全上就没怎么在意。见此状况，立刻用<code>iptables</code>禁掉了一些IP，比如说禁掉148.235.57.190：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo iptables -I INPUT -s 148.235.57.190 -j DROP
+</span></span></code></pre></td></tr></table></div></div><p><code>-I</code>表示插入规则，<code>INPUT</code>是规则链，<code>-s</code>指定来源IP，<code>-j</code>指定要跳转的目标，<code>DROP</code>表示丢弃数据包。</p><p>禁掉之后，过一会儿发现又来一些新的IP地址发起攻击了。考虑到对方可能有不少IP，我总不能像这样手动禁止IP吧。于是，就找到了<code>fail2ban</code>。</p><h2 id="fail2ban">fail2ban</h2><p><code>fail2ban</code>通过监测指定的日志，对日志使用正则表达式匹配，当在一段时间内匹配到指定数量时，就采取相应的动作，一般是配置防火墙、邮件通知等。这个就叫jail。</p><h3 id="安装">安装</h3><p>安装<code>fail2ban</code>比较简单，直接安装即可。为了实现邮件通知功能，装个<code>mailutils</code>，这个自带邮件服务器<code>postfix</code>。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo apt install fail2ban mailutils
+</span></span></code></pre></td></tr></table></div></div><h3 id="配置">配置</h3><p><code>fail2ban</code>的配置文件位于<code>/etc/fail2ban</code>，<code>fail2ban.conf</code>是对程序的一些设置，<code>jail.conf</code>是对规则的配置。不过，官方建议不要修改<code>.conf</code>文件，而是使用<code>.local</code>文件。也就是说，应该配置<code>jail.local</code>文件（没有的话新建一个），而不是去修改<code>jail.conf</code>文件。<code>fail2ban</code>会先读取<code>.conf</code>，再读取<code>.local</code>，因此<code>.local</code>可以覆写与<code>.conf</code>中重复的项，而<code>.local</code>中没有的项就可以使用<code>.conf</code>提供的配置。也可以在<code>jail.d</code>目录下进行配置。</p><p>以下是我的<code>/etc/fail2ban/jail.local</code>配置示例：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>DEFAULT<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 允许本地环回和内网访问</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ignoreip</span> <span class="o">=</span> 127.0.0.1/8 192.168.3.0/24
+</span></span><span class="line"><span class="cl"><span class="c1"># 邮件告知谁</span>
+</span></span><span class="line"><span class="cl"><span class="nv">destemail</span> <span class="o">=</span> user1@localhost
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>sshd<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">enabled</span> <span class="o">=</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 在10小时内重试5次，就禁止30天</span>
+</span></span><span class="line"><span class="cl"><span class="nv">maxretry</span> <span class="o">=</span> <span class="m">5</span>
+</span></span><span class="line"><span class="cl"><span class="nv">bantime</span> <span class="o">=</span> <span class="m">2592000</span>
+</span></span><span class="line"><span class="cl"><span class="nv">findtime</span> <span class="o">=</span> <span class="m">36000</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 禁止并发送邮件</span>
+</span></span><span class="line"><span class="cl"><span class="nv">action</span> <span class="o">=</span> %<span class="o">(</span>action_mwl<span class="o">)</span>s
+</span></span></code></pre></td></tr></table></div></div><p><code>ignoreip</code>表示忽略哪些IP地址段，可以配置多个IP地址段，用空格隔开。192.168.3.0/24表示192.168.3.0~192.168.3.255这个IP地址段，/24是掩码的一种表示，意思是前24位是网段，也就是子网掩码为255.255.255.0。</p><p><code>destemail</code>是发送邮件的收件人，多个收件人用<code>,</code>分隔。</p><p><code>maxretry</code>、<code>bantime</code>、<code>findtime</code>表示：在findtime秒内有maxretry次符合规则的日志产生就禁止来源bantime秒。不过，由于处理时延，实际开始处理时可能次数比maxretry多一点。（注意“bantime”别拼写错了）</p><p>至于<code>action</code>，默认的动作是<code>iptables-multiport</code>，也就是配置<code>iptables</code>。</p><p><code>jail.conf</code>里预设了一些其它动作，比如禁止并发送邮件等，可以像示例那样使用。也可以使用<code>/etc/fail2ban/action.d</code>中的动作，需要传入相应的参数，可以参考<code>jail.conf</code>里的示例。</p><p><code>filter.d</code>目录是对日志的过滤规则，默认有很多实用的规则。如果要自定义过滤规则，要注意：</p><ol><li>可以配置多条正则表达式，每行一条，每匹配一条都会使得计数器+1</li><li>对于日志行，会先自动匹配日期时间，剩下的部分才执行配置的正则表达式匹配，且不要求全部匹配。如果自动匹配日期时间失败，则整行的匹配会失败。并且，自动匹配日期时间的行为无法配置。</li></ol><h3 id="命令行">命令行</h3><p>当修改配置文件后，需要重新加载配置文件使其生效：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo fail2ban-client reload
+</span></span></code></pre></td></tr></table></div></div><p>重新加载配置文件后，也会重新扫描日志文件，重新执行jail。</p><p>查看配置了哪些jail：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo fail2ban-client status
+</span></span><span class="line"><span class="cl">Status
+</span></span><span class="line"><span class="cl"><span class="p">|</span>- Number of jail:      <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="sb">`</span>- Jail list:   sshd
+</span></span></code></pre></td></tr></table></div></div><p>查看jail的详细信息，只需加上jail名即可，例如查看sshd：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo fail2ban-client status sshd
+</span></span><span class="line"><span class="cl">Status <span class="k">for</span> the jail: sshd
+</span></span><span class="line"><span class="cl"><span class="p">|</span>- Filter
+</span></span><span class="line"><span class="cl"><span class="p">|</span>  <span class="p">|</span>- Currently failed: <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>  <span class="p">|</span>- Total failed:     <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>  <span class="sb">`</span>- File list:        /var/log/auth.log
+</span></span><span class="line"><span class="cl"><span class="sb">`</span>- Actions
+</span></span><span class="line"><span class="cl">   <span class="p">|</span>- Currently banned: <span class="m">2</span>
+</span></span><span class="line"><span class="cl">   <span class="p">|</span>- Total banned:     <span class="m">2</span>
+</span></span><span class="line"><span class="cl">   <span class="sb">`</span>- Banned IP list:   186.201.214.162 46.101.103.207
+</span></span></code></pre></td></tr></table></div></div><p>为了检查过滤规则是否有效，可以使用<code>fail2ban-regex</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 检查日志行与正则表达式的匹配情况</span>
+</span></span><span class="line"><span class="cl">$ fail2ban-regex <span class="s1">&#39;18-07-2008 12:13:01 [1.2.3.4] authentication failed&#39;</span> <span class="s1">&#39;\[&lt;HOST&gt;\] authentication failed&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 检查日志与过滤规则的匹配情况</span>
+</span></span><span class="line"><span class="cl">$ fail2ban-regex /var/log/auth.log /etc/fail2ban/filter.d/sshd.conf
+</span></span><span class="line"><span class="cl"><span class="c1"># 检查日志与正则表达式的匹配情况</span>
+</span></span><span class="line"><span class="cl">$ fail2ban-regex /var/log/auth.log <span class="s2">&#34;Failed [-/\w]+ for .* from &lt;HOST&gt;&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>Results中，Failregex: x total表示有x条日志行匹配（可见发出了很多次攻击），Date template hits表示自动匹配日期时间时命中了哪些格式。</p><h3 id="注意事项">注意事项</h3><p>当我们更改了时区后，然后日志的时间并没有修改过来，导致两者的时间不一致，这样<code>fail2ban</code>的工作就失效了。
+解决办法：重启日志服务，保证两者的时间一致：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo systemctl restart rsyslog
+</span></span></code></pre></td></tr></table></div></div><p>sshd更改端口号后使用<code>fail2ban</code>需要注意在填写配置的时候也需要更改端口号，否则起不到禁止作用。
+如果使用jail.conf中预设的action，设置port即可，否则设置action，传入合适的port参数。</p><h3 id="iptables">iptables</h3><p>这里并不打算详细介绍<code>iptables</code>，毕竟本文的主角是<code>fail2ban</code>。</p><p>启动fail2ban服务后，会自动在iptables里加入f2b-xxx链（xxx是jail名）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ sudo iptables -nL
+</span></span><span class="line"><span class="cl">Chain INPUT (policy ACCEPT)
+</span></span><span class="line"><span class="cl">target     prot opt source               destination
+</span></span><span class="line"><span class="cl">f2b-sshd   tcp  --  0.0.0.0/0            0.0.0.0/0            multiport dports 22
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">Chain f2b-sshd (1 references)
+</span></span><span class="line"><span class="cl">target     prot opt source               destination
+</span></span></code></pre></td></tr></table></div></div><p>如果fail2ban误杀了某个IP，可以手动将其移除。例如移除f2b-sshd链中的第1条规则（从1开始）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo iptables -D f2b-sshd <span class="m">1</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="参考文献">参考文献</h2><ul><li><a href="http://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/linux/">Linux</a></div><nav class="post-nav"><a class="prev" href="/p/7v8q4/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">SSH内网穿透</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7uzkg/"><span class="next-text nav-default">深入理解JAVA虚拟机——垃圾回收</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

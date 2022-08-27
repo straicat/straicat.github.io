@@ -1,0 +1,227 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>迁移home目录到新的分区 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="不少人在安装系统时没有自定义分区，将系统安装在一块硬盘上。如果机器上有另外一块大容量硬盘，那么就不能很好地利用；并且，没有将home目录挂载"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/80s7k/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="迁移home目录到新的分区"><meta property="og:description" content="不少人在安装系统时没有自定义分区，将系统安装在一块硬盘上。如果机器上有另外一块大容量硬盘，那么就不能很好地利用；并且，没有将home目录挂载"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/80s7k/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-11-18T14:08:00+08:00"><meta property="article:modified_time" content="2019-11-18T14:08:00+08:00"><meta itemprop="name" content="迁移home目录到新的分区"><meta itemprop="description" content="不少人在安装系统时没有自定义分区，将系统安装在一块硬盘上。如果机器上有另外一块大容量硬盘，那么就不能很好地利用；并且，没有将home目录挂载"><meta itemprop="datePublished" content="2019-11-18T14:08:00+08:00"><meta itemprop="dateModified" content="2019-11-18T14:08:00+08:00"><meta itemprop="wordCount" content="2433"><meta itemprop="keywords" content="Linux,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="迁移home目录到新的分区"><meta name="twitter:description" content="不少人在安装系统时没有自定义分区，将系统安装在一块硬盘上。如果机器上有另外一块大容量硬盘，那么就不能很好地利用；并且，没有将home目录挂载"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">迁移home目录到新的分区</h1><div class="post-meta"><span class="post-time">2019-11-18</span>
+<span class="more-meta">约 2433 字</span>
+<span class="more-meta">预计阅读 5 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#分区">分区</a><ul><li><a href="#使用gparted分区">使用gparted分区</a></li><li><a href="#使用parted分区">使用parted分区</a></li></ul></li><li><a href="#迁移数据">迁移数据</a></li><li><a href="#修改fstab">修改fstab</a></li></ul></li></ul></nav></div></div><div class="post-content"><p>不少人在安装系统时没有自定义分区，将系统安装在一块硬盘上。如果机器上有另外一块大容量硬盘，那么就不能很好地利用；并且，没有将home目录挂载到单独的硬盘，会导致重装系统时覆盖home目录而丢失数据。此时，可以把home目录挂载到单独的硬盘，注意数据的迁移。</p><p>使用虚拟机来演示，在初始时查看挂载情况：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ df -Th
+</span></span><span class="line"><span class="cl">文件系统       类型      容量  已用  可用 已用% 挂载点
+</span></span><span class="line"><span class="cl">udev           devtmpfs  967M     <span class="m">0</span>  967M    0% /dev
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     200M  3.6M  196M    2% /run
+</span></span><span class="line"><span class="cl">/dev/sda1      ext4       18G  4.7G   13G   28% /
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     997M   84K  997M    1% /dev/shm
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     5.0M  4.0K  5.0M    1% /run/lock
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     997M     <span class="m">0</span>  997M    0% /sys/fs/cgroup
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     200M   32K  200M    1% /run/user/1000
+</span></span></code></pre></td></tr></table></div></div><p>可以看到<code>/home</code>没有单独挂载。</p><p>虚拟机关机，在设置里添加一块新硬盘：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574049166.png" alt></p><p>虚拟机开机，查看磁盘分区情况：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo fdisk -l
+</span></span><span class="line"><span class="cl"><span class="o">[</span>sudo<span class="o">]</span> jlice 的密码： 
+</span></span><span class="line"><span class="cl">Disk /dev/sda: <span class="m">20</span> GiB, <span class="m">21474836480</span> bytes, <span class="m">41943040</span> sectors
+</span></span><span class="line"><span class="cl">Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+</span></span><span class="line"><span class="cl">Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+</span></span><span class="line"><span class="cl">I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+</span></span><span class="line"><span class="cl">Disklabel type: dos
+</span></span><span class="line"><span class="cl">Disk identifier: 0x4e5e418d
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">设备       启动    Start   末尾   扇区 Size Id 类型
+</span></span><span class="line"><span class="cl">/dev/sda1  *        <span class="m">2048</span> <span class="m">37748735</span> <span class="m">37746688</span>  18G <span class="m">83</span> Linux
+</span></span><span class="line"><span class="cl">/dev/sda2       <span class="m">37750782</span> <span class="m">41940991</span>  <span class="m">4190210</span>   2G  <span class="m">5</span> 扩展
+</span></span><span class="line"><span class="cl">/dev/sda5       <span class="m">37750784</span> <span class="m">41940991</span>  <span class="m">4190208</span>   2G <span class="m">82</span> Linux 交换 / Solaris
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Disk /dev/sdb: <span class="m">10</span> GiB, <span class="m">10737418240</span> bytes, <span class="m">20971520</span> sectors
+</span></span><span class="line"><span class="cl">Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+</span></span><span class="line"><span class="cl">Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+</span></span><span class="line"><span class="cl">I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+</span></span></code></pre></td></tr></table></div></div><p>可以看到我们刚才添加的硬盘（<code>/dev/sdb</code>），不过还没有分区，需要先进行分区。</p><blockquote><p>本文操作的硬盘设备名根据实际情况修改</p></blockquote><h2 id="分区">分区</h2><h3 id="使用gparted分区">使用gparted分区</h3><p>如果有图形界面，但对分区操作不熟悉，可以使用<code>gparted</code>来进行操作。如果没有安装<code>gparted</code>可以安装：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo apt install gparted
+</span></span></code></pre></td></tr></table></div></div><p><code>gparted</code>的界面如下：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574049818.png" alt></p><p>工具栏右侧可以切换硬盘设备。如果新建分区提示没有分区表，可以选择设备>创建分区表。<strong><code>msdos</code>限制分区最大为2T，如果你的硬盘大于2T，建议使用<code>gpt</code></strong>。注意，更改分区表会丢失硬盘上的全部数据。</p><p>然后创建分区：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574051105.png" alt></p><p>文件系统目前用的多的是<code>ext4</code>。不过，<code>xfs</code>逐渐成为主流，如果<code>xfs</code>选项是灰的，需要安装<code>xfsprogs</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo apt install xfsprogs
+</span></span></code></pre></td></tr></table></div></div><p>然后重启<code>gparted</code>即可使用<code>xfs</code>。</p><p>然后点对勾执行分区操作：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574051289.png" alt></p><h3 id="使用parted分区">使用parted分区</h3><p>不过，如果没有图形界面，就要使用命令行来分区了。如果是<code>msdos</code>分区表，可以使用<code>fdisk</code>，或者<code>cfdisk</code>（更易操作）。而<code>parted</code>，支持<code>msdos</code>和<code>gpt</code>。</p><p><code>parted</code>也可以看分区情况：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo parted -l      
+</span></span><span class="line"><span class="cl">Model: ATA VBOX HARDDISK <span class="o">(</span>scsi<span class="o">)</span>
+</span></span><span class="line"><span class="cl">磁盘 /dev/sda: 21.5GB
+</span></span><span class="line"><span class="cl">Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512B/512B
+</span></span><span class="line"><span class="cl">分区表：msdos
+</span></span><span class="line"><span class="cl">Disk Flags: 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">数字  开始：  End     大小    类型      文件系统        标志
+</span></span><span class="line"><span class="cl"> <span class="m">1</span>    1049kB  19.3GB  19.3GB  primary   ext4            启动
+</span></span><span class="line"><span class="cl"> <span class="m">2</span>    19.3GB  21.5GB  2145MB  extended
+</span></span><span class="line"><span class="cl"> <span class="m">5</span>    19.3GB  21.5GB  2145MB  logical   linux-swap<span class="o">(</span>v1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Model: ATA VBOX HARDDISK <span class="o">(</span>scsi<span class="o">)</span>
+</span></span><span class="line"><span class="cl">磁盘 /dev/sdb: 10.7GB
+</span></span><span class="line"><span class="cl">Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512B/512B
+</span></span><span class="line"><span class="cl">分区表：msdos
+</span></span><span class="line"><span class="cl">Disk Flags: 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">数字  开始：  End  大小  类型  文件系统  标志
+</span></span></code></pre></td></tr></table></div></div><p><code>parted</code>支持交互式操作，例如操作<code>/dev/sdb</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo parted /dev/sdb
+</span></span><span class="line"><span class="cl">GNU Parted 3.2
+</span></span><span class="line"><span class="cl">使用 /dev/sdb
+</span></span><span class="line"><span class="cl">欢迎使用 GNU Parted! 输入 <span class="s1">&#39;help&#39;</span>可获得命令列表.
+</span></span><span class="line"><span class="cl"><span class="o">(</span>parted<span class="o">)</span>  
+</span></span></code></pre></td></tr></table></div></div><p>创建<code>gpt</code>分区表：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">(</span>parted<span class="o">)</span> mktable                                                          
+</span></span><span class="line"><span class="cl">新的磁盘标签类型？ gpt
+</span></span><span class="line"><span class="cl">警告: The existing disk label on /dev/sdb will be destroyed and all data on this disk will be lost. Do
+</span></span><span class="line"><span class="cl">you want to <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">是/Yes/否/No? y
+</span></span></code></pre></td></tr></table></div></div><p>创建分区：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">(</span>parted<span class="o">)</span> mkpart                                                           
+</span></span><span class="line"><span class="cl">分区名称？  <span class="o">[]</span>?                                                           
+</span></span><span class="line"><span class="cl">文件系统类型？  <span class="o">[</span>ext2<span class="o">]</span>? ext4                                              
+</span></span><span class="line"><span class="cl">起始点？ <span class="m">1</span>
+</span></span><span class="line"><span class="cl">结束点？ 100%
+</span></span></code></pre></td></tr></table></div></div><p>这里使用<code>ext4</code>文件系统，使用整个硬盘作为分区，可以根据情况改动。从性能角度考虑，起始点一般不设为0，如果设为0会警告：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">The resulting partition is not properly aligned for best performance.
+</span></span></code></pre></td></tr></table></div></div><p>操作完成后，按<kbd>Ctrl+D</kbd>退出<code>parted</code>。</p><p>然后通过</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo fdisk -l
+</span></span></code></pre></td></tr></table></div></div><p>可以查分区名，也就是磁盘名+分区编号。然后格式化分区（根据实际情况选择相应的分区进行格式化）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo mkfs.ext4 /dev/sdb1
+</span></span></code></pre></td></tr></table></div></div><p>如要格式化为<code>xfs</code>，可以使用<code>mkfs.xfs</code>命令，注意要先安装<code>xfsprogs</code>。</p><h2 id="迁移数据">迁移数据</h2><p>之后就需要将/home里的数据迁移到新的分区了。为此，需要先挂载分区。所谓挂载，就是给分区一个访问的路径。挂载上面建立的新分区（分区名根据实际修改）到<code>/mnt</code>（也可以新建一个目录挂载，这里只是临时挂载）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo mount /dev/sdb1 /mnt
+</span></span></code></pre></td></tr></table></div></div><p>将home下面的数据复制到新分区的挂载点/mnt：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo cp -a /home/* /mnt/
+</span></span></code></pre></td></tr></table></div></div><p>注意两点：</p><ol><li><code>-a</code>选项可以保留文件的用户和用户组等信息，如果没有此选项，属主会变成<code>root</code>，这样会导致在图形界面登录时循环登录等问题。</li><li>是复制<code>/home</code>目录下所有的文件，不是复制整个<code>/home</code>目录。</li></ol><p>这样就把home目录下的文件复制到了新分区：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ll /mnt
+</span></span><span class="line"><span class="cl">总用量 20K
+</span></span><span class="line"><span class="cl">drwxr-xr-x <span class="m">25</span> jlice jlice 4.0K 11月 <span class="m">18</span> 13:17 jlice
+</span></span><span class="line"><span class="cl">drwx------  <span class="m">2</span> root  root   16K 11月 <span class="m">18</span> 13:10 lost+found
+</span></span></code></pre></td></tr></table></div></div><p>可以使用<code>umount</code>取消挂载：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo umount /mnt
+</span></span></code></pre></td></tr></table></div></div><h2 id="修改fstab">修改fstab</h2><p>查询分区的UUID：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo blkid   
+</span></span><span class="line"><span class="cl">/dev/sda1: <span class="nv">UUID</span><span class="o">=</span><span class="s2">&#34;56dbd416-9b43-4bb0-bbf7-a6ba1d071fe4&#34;</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">&#34;ext4&#34;</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">&#34;4e5e418d-01&#34;</span>
+</span></span><span class="line"><span class="cl">/dev/sda5: <span class="nv">UUID</span><span class="o">=</span><span class="s2">&#34;f98c2bc0-70eb-4044-81c9-13fcb27b40ee&#34;</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">&#34;swap&#34;</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">&#34;4e5e418d-05&#34;</span>
+</span></span><span class="line"><span class="cl">/dev/sdb1: <span class="nv">UUID</span><span class="o">=</span><span class="s2">&#34;dc081a00-b512-4804-9349-39b03aa02341&#34;</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">&#34;ext4&#34;</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">&#34;dfe32657-50fe-4d06-b96f-1d57ea69aaab&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>记下新分区的UUID。然后修改<code>/etc/fstab</code>。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># /etc/fstab: static file system information.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Use &#39;blkid&#39; to print the universally unique identifier for a</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># device; this may be used with UUID= as a more robust way to name devices</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># that works even if disks are added and removed. See fstab(5).</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># &lt;file system&gt; &lt;mount point&gt;   &lt;type&gt;  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># / was on /dev/sda1 during installation</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UUID</span><span class="o">=</span>56dbd416-9b43-4bb0-bbf7-a6ba1d071fe4 /               ext4    <span class="nv">errors</span><span class="o">=</span>remount-ro <span class="m">0</span>       <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># swap was on /dev/sda5 during installation</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UUID</span><span class="o">=</span>f98c2bc0-70eb-4044-81c9-13fcb27b40ee none            swap    sw              <span class="m">0</span>       <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UUID</span><span class="o">=</span>dc081a00-b512-4804-9349-39b03aa02341 /home           ext4    defaults    <span class="m">0</span>  <span class="m">2</span>
+</span></span></code></pre></td></tr></table></div></div><p>在<code>/etc/fstab</code>添加最后一行（UUID根据<code>blkid</code>的结果修改）。</p><p><code>fstab</code>用于配置开机自动挂载。共有6列： 第1列是分区标识，一般使用UUID。也可以使用分区名（如：/dev/sdb1）或label；第2列是挂载点；第3列是文件系统；第4列是选项；第5列一般设为0，第6列一般<code>/</code>设为0，交换分区和<code>/tmp</code>设为0，其余一般设为2。</p><p>关于<code>fstab</code>详见：<a href="https://wiki.archlinux.org/index.php/Fstab">fstab - ArchWiki</a></p><p>如果就这样重启，<code>/home</code>将在新分区上，之前的<code>/home</code>就访问不到了。如果之前的<code>/home</code>上的数据很少，可以不用管，否则就需要删除之前的<code>/home</code>上的数据了。由于用户已登录系统，需要用到<code>/home</code>，所以需要切换到单用户模式，这样才可以对<code>/home</code>进行操作。</p><p>切换到单用户模式：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo init <span class="m">1</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574056143.png" alt></p><p>按Enter继续，此时可以使用root进行操作。root用户的家目录是<code>/root</code>，可以操作<code>/home</code>而不受影响。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/80s7k/1574056525.png" alt></p><p>首先可以看到<code>/home</code>成功挂载到了新分区，为此，先取消挂载<code>/home</code>。然后将<code>/home</code>重命名或删除，图中为重命名，可以待之后确认一切无误后再删除。然后创建<code>/home</code>目录，然后将新分区挂载到<code>/home</code>。</p><p>之后运行<code>reboot</code>重启。</p><p>重启之后，可以看到<code>/home</code>已迁移到新分区了：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ df -Th       
+</span></span><span class="line"><span class="cl">文件系统       类型      容量  已用  可用 已用% 挂载点
+</span></span><span class="line"><span class="cl">udev           devtmpfs  967M     <span class="m">0</span>  967M    0% /dev
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     200M  3.6M  196M    2% /run
+</span></span><span class="line"><span class="cl">/dev/sda1      ext4       18G  4.8G   12G   29% /
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     997M  140K  997M    1% /dev/shm
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     5.0M  4.0K  5.0M    1% /run/lock
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     997M     <span class="m">0</span>  997M    0% /sys/fs/cgroup
+</span></span><span class="line"><span class="cl">/dev/sdb1      ext4      9.8G  175M  9.1G    2% /home
+</span></span><span class="line"><span class="cl">tmpfs          tmpfs     200M   32K  200M    1% /run/user/1000
+</span></span></code></pre></td></tr></table></div></div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/linux/">Linux</a></div><nav class="post-nav"><a class="prev" href="/p/80ws1/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">增加交换空间【译】</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/80p1z/"><span class="next-text nav-default">猿辅导2020届秋招面经</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,125 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>利用油猴脚本显示扇贝网真实打卡日记 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="前一段时间发现扇贝网页版显示的打卡日记和手机上看到的不一致，感觉应该是网页版开发滞后的原因。这种不一致给查卡带来了诸多不便，于是就设法解决该"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7kmxm/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="利用油猴脚本显示扇贝网真实打卡日记"><meta property="og:description" content="前一段时间发现扇贝网页版显示的打卡日记和手机上看到的不一致，感觉应该是网页版开发滞后的原因。这种不一致给查卡带来了诸多不便，于是就设法解决该"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7kmxm/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-06-13T10:34:00+08:00"><meta property="article:modified_time" content="2018-06-13T10:34:00+08:00"><meta itemprop="name" content="利用油猴脚本显示扇贝网真实打卡日记"><meta itemprop="description" content="前一段时间发现扇贝网页版显示的打卡日记和手机上看到的不一致，感觉应该是网页版开发滞后的原因。这种不一致给查卡带来了诸多不便，于是就设法解决该"><meta itemprop="datePublished" content="2018-06-13T10:34:00+08:00"><meta itemprop="dateModified" content="2018-06-13T10:34:00+08:00"><meta itemprop="wordCount" content="933"><meta itemprop="keywords" content="JavaScript,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="利用油猴脚本显示扇贝网真实打卡日记"><meta name="twitter:description" content="前一段时间发现扇贝网页版显示的打卡日记和手机上看到的不一致，感觉应该是网页版开发滞后的原因。这种不一致给查卡带来了诸多不便，于是就设法解决该"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">利用油猴脚本显示扇贝网真实打卡日记</h1><div class="post-meta"><span class="post-time">2018-06-13</span>
+<span class="more-meta">约 933 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"></nav></div></div><div class="post-content"><p>前一段时间发现扇贝网页版显示的打卡日记和手机上看到的不一致，感觉应该是网页版开发滞后的原因。这种不一致给查卡带来了诸多不便，于是就设法解决该问题。</p><p>起初我想到的方案是做一个静态页面放到对象存储上，然后对象存储开启静态服务，静态页面通过Ajax请求手机版的RESTful接口获取数据，然后生成打卡日记。不过，通过反复试验发现这种方法行不通。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><p>直接使用Ajax请求会报错：</p><p>No &lsquo;Access-Control-Allow-Origin&rsquo; header is present on the requested resource.</p><p>这是因为服务器不允许跨站。</p><p>然后接触到了用JSONP来进行跨站请求。因为js脚本可以跨站，像静态博客的评论功能就是用的跨站js脚本，JSONP的思路是在请求的地址上携带一个callback参数，服务端以这个callback参数作为函数名包裹JSON数据，然后在返回数据时调用这个函数，就把JSON数据传过来了。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// do something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><p>但是，使用JSONP的前提同样是需要服务器端的配合。假如服务器端不适配JSONP，也就是不返回包裹JSON数据的函数，而是依旧返回JSON，那么JSON数据就会被视为javascript脚本运行，会报错：</p><p>Uncaught SyntaxError: Unexpected token :</p><p>然后想到iframe也可以跨站，于是试试iframe，结果发现依然是想多了：</p><p>Refused to display &lsquo;***&rsquo; in a frame because it set &lsquo;X-Frame-Options&rsquo; to &lsquo;deny&rsquo;.</p><p>也就是iframe也是需要服务器端配合。假如服务器端不允许iframe，那么iframe便不能跨站。</p><p>跨站请求其实也比较危险，例如XSS、CSRF。于是，我决定不通过跨站请求，而是利用油猴脚本来实现我的需求，顺便补充了点jQuery。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// ==UserScript==
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @name         显示真实打卡日记
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @namespace    https://www.shanbay.com/
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @version      0.1
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @description  显示时区、真实打卡日记、打卡时间
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @author       文剑木然
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @match        https://www.shanbay.com/checkin/user/*
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @grant        MIT
+</span></span></span><span class="line"><span class="cl"><span class="c1">// @require      https://static.baydn.com/static/scripts/jquery-1.7.2.min.js
+</span></span></span><span class="line"><span class="cl"><span class="c1">// ==/UserScript==
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;www.shanbay.com&#39;</span><span class="p">,</span> <span class="s1">&#39;www.shanbay.com/api/v1&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;?page&#39;</span><span class="p">,</span> <span class="s1">&#39;?ipp=10&amp;page&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 显示时区
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kd">var</span> <span class="nx">timezone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">user</span><span class="p">.</span><span class="nx">timezone</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">timezone</span> <span class="o">!==</span> <span class="s1">&#39;Asia/Shanghai&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;h2&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;h2&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;（&#39;</span> <span class="o">+</span> <span class="nx">timezone</span> <span class="o">+</span><span class="s1">&#39;）&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 修改打卡日记
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">idata</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">icheckin</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#checkin&#39;</span><span class="p">).</span><span class="nx">children</span><span class="p">().</span><span class="nx">eq</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">number</span> <span class="o">=</span> <span class="nx">icheckin</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;span.number&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">number</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">idata</span><span class="p">.</span><span class="nx">num_checkin_days</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">note</span> <span class="o">=</span> <span class="nx">icheckin</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;div.note&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">note_length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">note</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">idata</span><span class="p">.</span><span class="nx">info</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">note</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">idata</span><span class="p">.</span><span class="nx">info</span> <span class="o">+</span> <span class="s1">&#39; , &#39;</span> <span class="o">+</span> <span class="nx">idata</span><span class="p">.</span><span class="nx">note</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">date</span> <span class="o">=</span> <span class="nx">icheckin</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;div.span4&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">date</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;&#39;</span> <span class="o">+</span> <span class="nx">idata</span><span class="p">.</span><span class="nx">checkin_date</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                      <span class="s1">&#39;&lt;/strong&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;(&#39;</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                      <span class="nx">idata</span><span class="p">.</span><span class="nx">checkin_time</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;nbsp;&amp;nbsp;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><p>jQuery中，<code>children()</code>指直接子元素，<code>.find()</code>能递归查找子元素，<code>.eq(i)</code>为第i个元素。用jQuery来修改DOM还是十分简便的。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/javascript/">JavaScript</a></div><nav class="post-nav"><a class="prev" href="/p/7l2u9/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">PPM、PGM、PBM图像格式剖析</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7kemt/"><span class="next-text nav-default">向量微积分基础</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

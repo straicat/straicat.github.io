@@ -1,0 +1,189 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>用Shell脚本做个GitHub图床工具 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="前言 因为我的阿里云学生机快到期了，所以思来想去决定还是把博客迁移到静态博客，不折腾Typecho了。不过，使用静态博客有个比较麻烦的事就是图"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8clul/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="用Shell脚本做个GitHub图床工具"><meta property="og:description" content="前言 因为我的阿里云学生机快到期了，所以思来想去决定还是把博客迁移到静态博客，不折腾Typecho了。不过，使用静态博客有个比较麻烦的事就是图"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8clul/"><meta property="article:section" content="post"><meta property="article:published_time" content="2020-12-05T15:57:46+08:00"><meta property="article:modified_time" content="2020-12-05T15:57:46+08:00"><meta itemprop="name" content="用Shell脚本做个GitHub图床工具"><meta itemprop="description" content="前言 因为我的阿里云学生机快到期了，所以思来想去决定还是把博客迁移到静态博客，不折腾Typecho了。不过，使用静态博客有个比较麻烦的事就是图"><meta itemprop="datePublished" content="2020-12-05T15:57:46+08:00"><meta itemprop="dateModified" content="2020-12-05T15:57:46+08:00"><meta itemprop="wordCount" content="1218"><meta itemprop="keywords" content><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用Shell脚本做个GitHub图床工具"><meta name="twitter:description" content="前言 因为我的阿里云学生机快到期了，所以思来想去决定还是把博客迁移到静态博客，不折腾Typecho了。不过，使用静态博客有个比较麻烦的事就是图"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">用Shell脚本做个GitHub图床工具</h1><div class="post-meta"><span class="post-time">2020-12-05</span>
+<span class="more-meta">约 1218 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#前言">前言</a></li><li><a href="#步骤">步骤</a></li><li><a href="#准备">准备</a></li><li><a href="#代码">代码</a></li><li><a href="#使用方法">使用方法</a></li><li><a href="#参考链接">参考链接</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="前言">前言</h2><p>因为我的阿里云学生机快到期了，所以思来想去决定还是把博客迁移到静态博客，不折腾Typecho了。不过，使用静态博客有个比较麻烦的事就是图片上传。众所周知，在Markdown里插入图片就需要图片链接，以前折腾了各种对象存储，现在觉得用GitHub做图床就挺不错的，速度其实还是挺快的，还有jsDelivr的CDN加速。</p><h2 id="步骤">步骤</h2><p>尽管有很多图床工具可以方便地进行图片上传，例如PicGo、uPic等。不过，我觉得对于这个简单的事情，没必要这么麻烦，用Shell脚本就行。于是乎，就简单用Shell脚本做了个GitHub图床工具。其实图床工具要做的事比较简单，主要流程如下：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8clul/1607156203.png" alt="图床流程"></p><p>首先是获取图片文件，我们可以指定本地图片文件的路径，不过我还希望能直接从剪贴板获取图片，因为我在博客里使用的图片大部分时候是截图，如果能从剪贴板获取图片的话会比较方便。在Linux上可以用<code>xclip</code>，在MacOS上我也找到了个能将剪贴板上的图片保存为文件的命令行工具：<code>pngpaste</code>，安装：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ brew install pngpaste
+</span></span></code></pre></td></tr></table></div></div><p>然后就是图片压缩了，有的图床工具可能没有图片压缩功能，即使有，压缩效果也可能不够理想。我之前找到两个图片压缩命令行工具：<code>pngquant</code>和<code>jpegoptim</code>，分别用于压缩<code>png</code>格式和<code>jpg</code>格式。</p><p>然后就是重点“图片上传”了。它其实包含两步，一是给图片换个名字以免重复，这一步其实是很个性化的，每个人可能有各自偏爱的图片命名方式。一般情况下，图床工具会提供一些重命名方式，但一般选择很有限，要做到个性化其实很难的。不过，如果是Shell脚本，就完全可以自己修改代码去自定义了。至于上传到GitHub，这个其实很简单，就一个<code>curl</code>命令就行。</p><p>最后，就是输出Markdown格式的图片链接了，至于复制链接到剪贴板，MacOS可以用自带的<code>pbcopy</code>，Linux可以依然用<code>xclip</code>。</p><h2 id="准备">准备</h2><p>首先，需要到<a href="https://github.com/settings/tokens">Personal Access Tokens</a>新建一个token:</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8clul/1607160590.png" alt="ScreenShot-2020-12-05T17:29:50"></p><p>然后，需要新建一个仓库用于存储图片。</p><h2 id="代码">代码</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nv">GITHUB_API_TOKEN</span><span class="o">=</span>your_token
+</span></span><span class="line"><span class="cl"><span class="nv">GITHUB_USER_NAME</span><span class="o">=</span>jlice
+</span></span><span class="line"><span class="cl"><span class="nv">GITHUB_USER_EMAIL</span><span class="o">=</span>i@jlice.top
+</span></span><span class="line"><span class="cl"><span class="nv">GITHUB_REPO</span><span class="o">=</span>blog-assets
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> get_file<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">[[</span> -z <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">filename</span><span class="o">=</span><span class="s2">&#34;/tmp/ScreenShot-&#34;</span><span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%dT%H:%M:%S&#39;</span><span class="k">)</span><span class="s2">&#34;.png&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nb">type</span> pngpaste <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">            pngpaste <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="nb">type</span> xclip <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">            xclip -selection clipboard -t image/png -o &gt; <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">fi</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">filename</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> compress<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">filename</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">suffix</span><span class="o">=</span><span class="si">${</span><span class="nv">filename</span><span class="p">##*.</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">suffix_lower</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$suffix</span> <span class="p">|</span> tr <span class="s1">&#39;A-Z&#39;</span> <span class="s1">&#39;a-z&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$suffix_lower</span> <span class="o">==</span> <span class="s2">&#34;png&#34;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        pngquant --skip-if-larger --ext <span class="s2">&#34;.&#34;</span><span class="nv">$suffix</span> --force --quality<span class="o">=</span>60-90 <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="o">[[</span> <span class="nv">$suffix_lower</span> <span class="o">==</span> <span class="s2">&#34;jpg&#34;</span> <span class="o">||</span> <span class="nv">$suffix_lower</span> <span class="o">==</span> <span class="s2">&#34;jpeg&#34;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        jpegoptim --max<span class="o">=</span><span class="m">90</span> --preserve --all-progressive <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> new_filename<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">filename</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">suffix</span><span class="o">=</span><span class="si">${</span><span class="nv">filename</span><span class="p">##*.</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="k">$(</span>date <span class="s1">&#39;+%Y/%s&#39;</span><span class="k">)</span><span class="s2">&#34;.&#34;</span><span class="nv">$suffix</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> upload<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    curl -siL -w <span class="s2">&#34;%{http_code}\n&#34;</span> -o /dev/null -X PUT <span class="s1">&#39;https://api.github.com/repos/&#39;</span><span class="nv">$GITHUB_USER_NAME</span><span class="s1">&#39;/&#39;</span><span class="nv">$GITHUB_REPO</span><span class="s1">&#39;/contents/&#39;</span><span class="s2">&#34;</span><span class="nv">$2</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        -H <span class="s1">&#39;Authorization: token &#39;</span><span class="nv">$GITHUB_API_TOKEN</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        -H <span class="s1">&#39;Content-Type: application/json&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        --data-raw <span class="s1">&#39;{
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &#34;message&#34;: &#34;upload&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &#34;committer&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s1">                &#34;name&#34;: &#34;&#39;</span><span class="nv">$GITHUB_USER_NAME</span><span class="s1">&#39;&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">                &#34;email&#34;: &#34;&#39;</span><span class="nv">$GITHUB_USER_EMAIL</span><span class="s1">&#39;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1">            },
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &#34;content&#34;: &#34;&#39;</span><span class="k">$(</span>base64 <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="k">)</span><span class="s1">&#39;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1">        }&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> markdown<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">alt</span><span class="o">=</span><span class="k">$(</span>basename <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">alt</span><span class="o">=</span><span class="si">${</span><span class="nv">alt</span><span class="p">%%.*</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">url</span><span class="o">=</span><span class="s2">&#34;https://cdn.jsdelivr.net/gh/</span><span class="nv">$GITHUB_USER_NAME</span><span class="s2">/</span><span class="nv">$GITHUB_REPO</span><span class="s2">/&#34;&#34;</span><span class="nv">$2</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">markdown</span><span class="o">=</span><span class="s2">&#34;![</span><span class="nv">$alt</span><span class="s2">](</span><span class="nv">$url</span><span class="s2">)&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="nv">$markdown</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">type</span> pbcopy <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">echo</span> <span class="nv">$markdown</span> <span class="p">|</span> pbcopy
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="nb">type</span> xclip <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">echo</span> <span class="nv">$markdown</span> <span class="p">|</span> xclip -selection clipboard
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> main<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>get_file <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">[[</span> -f <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        compress <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">new_file</span><span class="o">=</span><span class="k">$(</span>new_filename <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">        upload <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$new_file</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        markdown <span class="s2">&#34;</span><span class="nv">$filename</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$new_file</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">echo</span> <span class="s2">&#34;file not found: </span><span class="nv">$filename</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">main <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="使用方法">使用方法</h2><p>编辑最上面的GITHUB_API_TOKEN、GITHUB_USER_NAME等参数，换成你自己的。假设保存为<code>uppic</code>，给它添加<code>x</code>权限即可运行。使用非常简单：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 上传剪贴板图片</span>
+</span></span><span class="line"><span class="cl">$ ./uppic
+</span></span><span class="line"><span class="cl"><span class="c1"># 上传本地图片</span>
+</span></span><span class="line"><span class="cl">$ ./uppic <span class="s2">&#34;/Users/wjmr/Desktop/test.png&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="参考链接">参考链接</h2><ul><li><a href="https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#create-or-update-file-contents">Repositories - GitHub Docs</a></li></ul></div><footer class="post-footer"><nav class="post-nav"><a class="prev" href="/p/8cnc1/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Kafka 2.6卡住,Topic not present in metadata</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8ckfu/"><span class="next-text nav-default">在MyBatis中调试查看生成的SQL语句</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

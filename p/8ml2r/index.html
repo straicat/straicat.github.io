@@ -1,0 +1,139 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>PowerShell基于starship打造仿ys主题美化 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="背景 Windows现在对开发者越来越友好了，有了WSL2且支持Docker，并且JetBrains的IDE也支持WSL2，开发环境改善了不少"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8ml2r/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="PowerShell基于starship打造仿ys主题美化"><meta property="og:description" content="背景 Windows现在对开发者越来越友好了，有了WSL2且支持Docker，并且JetBrains的IDE也支持WSL2，开发环境改善了不少"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8ml2r/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-10-24T23:15:02+08:00"><meta property="article:modified_time" content="2021-10-24T23:15:02+08:00"><meta itemprop="name" content="PowerShell基于starship打造仿ys主题美化"><meta itemprop="description" content="背景 Windows现在对开发者越来越友好了，有了WSL2且支持Docker，并且JetBrains的IDE也支持WSL2，开发环境改善了不少"><meta itemprop="datePublished" content="2021-10-24T23:15:02+08:00"><meta itemprop="dateModified" content="2021-10-24T23:15:02+08:00"><meta itemprop="wordCount" content="1597"><meta itemprop="keywords" content><meta name="twitter:card" content="summary"><meta name="twitter:title" content="PowerShell基于starship打造仿ys主题美化"><meta name="twitter:description" content="背景 Windows现在对开发者越来越友好了，有了WSL2且支持Docker，并且JetBrains的IDE也支持WSL2，开发环境改善了不少"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">PowerShell基于starship打造仿ys主题美化</h1><div class="post-meta"><span class="post-time">2021-10-24</span>
+<span class="more-meta">约 1597 字</span>
+<span class="more-meta">预计阅读 4 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#背景">背景</a></li><li><a href="#效果">效果</a></li><li><a href="#安装">安装</a><ul><li><a href="#scoop安装">scoop安装</a></li><li><a href="#starship安装">starship安装</a></li></ul></li><li><a href="#配置">配置</a><ul><li><a href="#powershell配置">PowerShell配置</a></li><li><a href="#starship如何配置">starship如何配置</a></li><li><a href="#仿ys主题配置">仿ys主题配置</a></li></ul></li><li><a href="#总结">总结</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="背景">背景</h2><p>Windows现在对开发者越来越友好了，有了WSL2且支持Docker，并且JetBrains的IDE也支持WSL2，开发环境改善了不少，Windows成为最好用的Linux发行版。</p><p>Windows的应用商店有一些高颜值的终端，作为传统的cmd与powershell终端的替代，视觉上提升了很多。powershell也有了新版，例如我目前在使用的PowerShell 7.1.5版本。</p><p>然而，对于在Linux上常用的<code>oh-my-zsh</code>，Powershell默认状态却并不美观，其命令提示符非常单调，也不能显示git仓库的分支。</p><h2 id="效果">效果</h2><p>在众多<code>oh-my-zsh</code>主题里，我比较喜欢<code>ys</code>主题，主要是因为比较简约，不需要特殊的字体，没有各种花里胡哨的效果，因此可以在各种终端环境下完整地显示。下面是Linux上<code>ys</code>主题与PowerShell基于<code>starship</code>的<code>ys</code>主题的对比效果：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8ml2r/1635089392.png" alt="screenshot-20211024232952"></p><p>可以看到，还原度还是比较高的。移除了分支状态，因为效果一般并且很拖速度，考虑到很多时候是在IDE里管理代码，一般只需要关心下分支即可，所以干脆省去了。</p><p>网上很多是使用<code>oh-my-posh</code>进行美化的，本篇就不重复介绍了。我发现<code>starship</code>是跨平台而且感觉更为轻量，所以使用这个。</p><h2 id="安装">安装</h2><p>首先安装新版PowerShell和Windows Terminal，都可以直接在微软商店里安装。PowerShell配置文件命令行那里最后加上<code> -NoLogo</code>就可以不显示每次打开PowerShell时显示的提示内容：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">PowerShell 7.1.5
+</span></span><span class="line"><span class="cl">Copyright <span class="o">(</span>c<span class="o">)</span> Microsoft Corporation.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">https://aka.ms/powershell
+</span></span><span class="line"><span class="cl">Type <span class="s1">&#39;help&#39;</span> to get help.
+</span></span></code></pre></td></tr></table></div></div><h3 id="scoop安装">scoop安装</h3><p>Windows上缺少好用的包管理工具，勉强接近的就是<code>scoop</code>了，尽管<code>scoop</code>也缺少很多功能，但装几个包还是够用的。玩<code>scoop</code>需要自备梯子，官网：<a href="https://scoop.sh/">Scoop</a>。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">iwr -useb get.scoop.sh <span class="p">|</span> iex
+</span></span></code></pre></td></tr></table></div></div><h3 id="starship安装">starship安装</h3><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scoop install starship
+</span></span></code></pre></td></tr></table></div></div><h2 id="配置">配置</h2><h3 id="powershell配置">PowerShell配置</h3><p>在<code>%userprofile%\Documents\PowerShell</code>目录下新建<code>Microsoft.PowerShell_profile.ps1</code>，填入如下内容：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Invoke-Expression <span class="o">(</span><span class="p">&amp;</span>starship init powershell<span class="o">)</span>
+</span></span></code></pre></td></tr></table></div></div><p>PS：为了让PowerShell更好用，我还添加了如下内容：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Set-PSReadLineOption -EditMode Emacs
+</span></span><span class="line"><span class="cl">Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+</span></span><span class="line"><span class="cl"><span class="c1"># Autocompletion for arrow keys</span>
+</span></span><span class="line"><span class="cl">Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
+</span></span><span class="line"><span class="cl">Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+</span></span></code></pre></td></tr></table></div></div><h3 id="starship如何配置">starship如何配置</h3><p>在<code>%userprofile%\.config</code>目录下新建<code>starship.toml</code>文件，该文件即是<code>starship</code>的配置文件。</p><p><code>starship</code>的配置采用TOML配置文件，可以大概分为两大部分：整体配置与部分配置。顶层无section的部分是整体配置，各个部分在相应的section里进行配置。</p><p>例如，整体配置里，<code>format</code>就是控制要展示哪些部分以及这些部分要怎么展示。可以展示的部分有用户名（username）、主机名（hostname）等。</p><p>而针对每个部分的配置，都在相应的section里。例如，针对username这个部分的配置，就在<code>[username]</code>这个section里。</p><p><code>starship</code>有一些默认配置，可以覆盖这些默认配置来自定义出自己喜欢的效果。具体的配置参数详见：<a href="https://starship.rs/config/">Configuration | Starship</a></p><h3 id="仿ys主题配置">仿ys主题配置</h3><p>下面是我的仿<code>ys</code>主题的配置：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s2">&#34;&#34;&#34;$username$hostname$directory$git_branch$time$status
+</span></span></span><span class="line"><span class="cl"><span class="s2">$character&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">command_timeout</span> <span class="p">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="nx">add_newline</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">username</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style_user</span> <span class="p">=</span> <span class="s2">&#34;blue bold&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style_root</span> <span class="p">=</span> <span class="s2">&#34;red bold&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s2">&#34;[# $user]($style) &#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">disabled</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">show_always</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">hostname</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span>  <span class="s2">&#34;@ [$hostname](bold green) &#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">disabled</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ssh_only</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">directory</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">truncation_length</span> <span class="p">=</span> <span class="mi">1024</span>
+</span></span><span class="line"><span class="cl"><span class="nx">truncate_to_repo</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style</span> <span class="p">=</span> <span class="s2">&#34;yellow bold&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s2">&#34;in [$path]($style) &#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">git_branch</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style</span> <span class="p">=</span> <span class="s2">&#34;cyan&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">symbol</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s2">&#34;on git:[$symbol$branch]($style) &#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">status</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s2">&#34;$symbol[$status]($style) &#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">disabled</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style</span> <span class="p">=</span> <span class="s2">&#34;red&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">symbol</span> <span class="p">=</span> <span class="s2">&#34;C:&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">time</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">disabled</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">format</span> <span class="p">=</span> <span class="s1">&#39;[\[$time\]]($style) &#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">time_format</span> <span class="p">=</span> <span class="s2">&#34;%T&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">utc_time_offset</span> <span class="p">=</span> <span class="s2">&#34;+8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">style</span> <span class="p">=</span> <span class="s2">&#34;white&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">character</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">success_symbol</span> <span class="p">=</span> <span class="s2">&#34;[&gt;](bold green)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">error_symbol</span> <span class="p">=</span> <span class="s2">&#34;[&gt;](bold red)&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="总结">总结</h2><p>总的来说，<code>starship</code>还是比较轻量级的，没有自带多套主题，导致自定义起来稍微有点麻烦，特别是对于不想翻文档查看应该如何配置的，而且网上关于<code>starship</code>配置的文章也不多。但其实，配置起来也并没有太麻烦，这也和文档写得一般有一些关系，如果有一些现成的配置案例作为参考就更好懂了。</p></div><footer class="post-footer"><nav class="post-nav"><a class="prev" href="/p/8n855/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">《TCP IP网络编程》学习笔记一</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8ml1h/"><span class="next-text nav-default">《Netty实战》读书笔记——编解码器与网络协议</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,358 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>尚硅谷前端Gulp教程学习笔记 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="这篇文章是尚硅谷前端Gulp教程的学习笔记。 环境搭建 教程使用的Gulp是3.9，而现在Gulp已经升级到了4.0，改动较大，但是并不影响学习"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/86l0m/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="尚硅谷前端Gulp教程学习笔记"><meta property="og:description" content="这篇文章是尚硅谷前端Gulp教程的学习笔记。 环境搭建 教程使用的Gulp是3.9，而现在Gulp已经升级到了4.0，改动较大，但是并不影响学习"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/86l0m/"><meta property="article:section" content="post"><meta property="article:published_time" content="2020-05-24T12:22:40+08:00"><meta property="article:modified_time" content="2020-05-24T12:22:40+08:00"><meta itemprop="name" content="尚硅谷前端Gulp教程学习笔记"><meta itemprop="description" content="这篇文章是尚硅谷前端Gulp教程的学习笔记。 环境搭建 教程使用的Gulp是3.9，而现在Gulp已经升级到了4.0，改动较大，但是并不影响学习"><meta itemprop="datePublished" content="2020-05-24T12:22:40+08:00"><meta itemprop="dateModified" content="2020-05-24T12:22:40+08:00"><meta itemprop="wordCount" content="2696"><meta itemprop="keywords" content="前端,Gulp,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="尚硅谷前端Gulp教程学习笔记"><meta name="twitter:description" content="这篇文章是尚硅谷前端Gulp教程的学习笔记。 环境搭建 教程使用的Gulp是3.9，而现在Gulp已经升级到了4.0，改动较大，但是并不影响学习"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">尚硅谷前端Gulp教程学习笔记</h1><div class="post-meta"><span class="post-time">2020-05-24</span>
+<span class="more-meta">约 2696 字</span>
+<span class="more-meta">预计阅读 6 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#环境搭建">环境搭建</a></li><li><a href="#gulp简介">Gulp简介</a><ul><li><a href="#核心api">核心API</a></li><li><a href="#注册任务">注册任务</a></li></ul></li><li><a href="#基本使用">基本使用</a><ul><li><a href="#构建js">构建js</a></li><li><a href="#构建less">构建Less</a></li><li><a href="#构建css">构建CSS</a></li><li><a href="#注册默认任务">注册默认任务</a></li><li><a href="#压缩html">压缩HTML</a></li><li><a href="#半自动构建">半自动构建</a></li><li><a href="#全自动构建">全自动构建</a></li><li><a href="#自动加载插件">自动加载插件</a></li></ul></li></ul></li></ul></nav></div></div><div class="post-content"><p>这篇文章是<a href="https://www.bilibili.com/video/BV18s411E7T5">尚硅谷前端Gulp教程</a>的学习笔记。</p><h2 id="环境搭建">环境搭建</h2><p>教程使用的Gulp是3.9，而现在Gulp已经升级到了4.0，改动较大，但是并不影响学习。为了避免环境不一致导致的各种坑，可以安装和教程一致的版本。目前，Node.js的LTS版本为v12.16，已经不兼容Gulp 3.9了，如果Node.js版本过新，会报错：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">fs</span><span class="p">.</span><span class="nx">js</span><span class="o">:</span><span class="mi">35</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="o">=</span> <span class="nx">primordials</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">^</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">ReferenceError</span><span class="o">:</span> <span class="nx">primordials</span> <span class="nx">is</span> <span class="nx">not</span> <span class="nx">defined</span>
+</span></span></code></pre></td></tr></table></div></div><p>为了更优雅地管理Node.js的版本，推荐使用nvm。Node.js v11.15.0和Gulp 3.9是兼容的，可以安装此版本。安装nvm后，执行下面的命令安装Node.js v11.15：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ nvm install v11.15.0
+</span></span><span class="line"><span class="cl">$ nvm use v11.15.0
+</span></span></code></pre></td></tr></table></div></div><p>在WebStorm中新建Node.js项目，项目目录下会有<code>package.json</code>，编辑之，内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;name&#34;</span><span class="o">:</span> <span class="s2">&#34;gulp-learn&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;version&#34;</span><span class="o">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;devDependencies&#34;</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.9.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-clean-css&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.9.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-concat&#34;</span><span class="o">:</span> <span class="s2">&#34;^2.6.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-connect&#34;</span><span class="o">:</span> <span class="s2">&#34;^5.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-htmlmin&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-less&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.3.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-livereload&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.8.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-load-plugins&#34;</span><span class="o">:</span> <span class="s2">&#34;^1.5.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-rename&#34;</span><span class="o">:</span> <span class="s2">&#34;^1.2.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;gulp-uglify&#34;</span><span class="o">:</span> <span class="s2">&#34;^3.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;open&#34;</span><span class="o">:</span> <span class="s2">&#34;0.0.5&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后执行以下命令：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ npm install -D
+</span></span><span class="line"><span class="cl">$ npm install -g gulp@3.9.1
+</span></span></code></pre></td></tr></table></div></div><h2 id="gulp简介">Gulp简介</h2><p>个人觉得Gulp和make是类似的，它们都可以定义一些任务，任务之间可以定义一些依赖关系，然后指定任务进行自动构建。不同的是，make是通过组合Shell命令的方式实现任务，一般用于C++程序编译；而Gulp则是通过组合Gulp插件的方式实现任务，一般用于网页静态资源构建。Gulp能自动化完成javascript、sass、less、css等文件的合并、压缩、检查、监听文件变化、浏览器自动刷新、测试等任务。</p><h3 id="核心api">核心API</h3><ul><li><code>gulp.task</code>用于定义任务</li><li><code>gulp.src</code>用于将源文件读取到Gulp内存区域</li><li><code>gulp.dest</code>用于输出文件</li><li><code>gulp.watch</code>用于监听文件变化</li><li><code>gulp.pipe</code> 也就是管道，用于传递处理的文件</li></ul><h3 id="注册任务">注册任务</h3><p>在项目目录下新建<code>gulpfile.js</code>，这个文件定义Gulp的任务，Gulp在运行时会读取该文件并执行对应的操作。</p><p>如果注册普通任务，则在运行时需要指定任务名；如果注册默认任务，则在运行时不需要指定任务名。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 注册任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;task_name&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 配置任务的操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 注册默认任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[]);</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 运行指定任务</span>
+</span></span><span class="line"><span class="cl">$ gulp task_name
+</span></span><span class="line"><span class="cl"><span class="c1"># 运行默认任务</span>
+</span></span><span class="line"><span class="cl">$ gulp
+</span></span></code></pre></td></tr></table></div></div><h2 id="基本使用">基本使用</h2><h3 id="构建js">构建js</h3><p>任务需求：合并多个js文件，压缩js文件并将后缀重命名为<code>.min.js</code>。</p><p>这些功能依赖Gulp插件：<code>gulp-concat</code>、<code>gulp-uglify</code>、<code>gulp-rename</code></p><p>假设js源文件都位于<code>src/js/</code>下，将最后得到的文件存为<code>dist/js/build.min.js</code>。编辑<code>gulpfile.js</code>，内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">concat</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-concat&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">uglify</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-uglify&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">rename</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-rename&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;js&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;src/js/*.js&#39;</span><span class="p">)</span>  <span class="cm">/* 找到源文件，加载到gulp内存 */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">concat</span><span class="p">(</span><span class="s1">&#39;build.js&#39;</span><span class="p">))</span>  <span class="cm">/* 临时合并文件 */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;dist/js/&#39;</span><span class="p">))</span>  <span class="cm">/* 输出到本地 */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">uglify</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">rename</span><span class="p">({</span><span class="nx">suffix</span><span class="o">:</span> <span class="s1">&#39;.min&#39;</span><span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;dist/js/&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><p>在<code>src/js/</code>下添加一些js文件，然后运行：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ gulp js
+</span></span></code></pre></td></tr></table></div></div><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/86l0m/1590289970.png" alt="2020-05-24T03:12:49.png"></p><p>即可在<code>dist/js/</code>下看到构建好的<code>build.min.js</code>了。</p><p>如果要递归搜素目录下的js文件，<code>gulp.src</code>里的路径可以写为<code>src/js/**/*.js</code>。压缩js会移除冗余的js代码。</p><h3 id="构建less">构建Less</h3><p>任务需求：编译<code>less</code>为<code>css</code>。可以使用<code>gulp-less</code>插件来完成。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">less</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-less&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册转换less的任务 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;less&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;src/less/*.less&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">less</span><span class="p">())</span>  <span class="cm">/* 使用less编译，文件后缀自动转为.css */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;src/css/&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>less</code>编译时，会自动将编译后的文件重命名为<code>.css</code>后缀，所以不需要<code>rename</code>。</p><h3 id="构建css">构建CSS</h3><p>任务需求：合并多个CSS文件，然后压缩并重命名为<code>.min.css</code>后缀。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">concat</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-concat&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">rename</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-rename&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">cssClean</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-clean-css&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 注册合并压缩css文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;css&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;src/css/*.css&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">concat</span><span class="p">(</span><span class="s1">&#39;build.css&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 压缩与重命名可以顺序对调
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">rename</span><span class="p">({</span><span class="nx">suffix</span><span class="o">:</span> <span class="s1">&#39;.min&#39;</span><span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">cssClean</span><span class="p">({</span><span class="nx">compatibility</span><span class="o">:</span> <span class="s1">&#39;ie8&#39;</span><span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;dist/css/&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="注册默认任务">注册默认任务</h3><p>任务需求：运行<code>gulp</code>变自动执行任务js、less、css</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;js&#39;</span><span class="p">,</span> <span class="s1">&#39;less&#39;</span><span class="p">,</span> <span class="s1">&#39;css&#39;</span><span class="p">]);</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>注意：Gulp 4.0已不支持这种写法，会报错：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">assert</span><span class="p">.</span><span class="nx">js</span><span class="o">:</span><span class="mi">385</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">^</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">AssertionError</span> <span class="p">[</span><span class="nx">ERR_ASSERTION</span><span class="p">]</span><span class="o">:</span> <span class="nx">Task</span> <span class="kd">function</span> <span class="nx">must</span> <span class="nx">be</span> <span class="nx">specified</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>运行<code>gulp</code>就能执行这个默认任务了。它会启动default、js、less、css任务，不过，任务并不会等待前一个任务结束后才启动，这说明它们是异步执行的。如果删掉<code>return</code>，就会同步执行，不过由于<code>return</code>可以清理gulp内存，一般还是建议加上<code>return</code>。</p><p>不过，css任务是需要等待less任务结束后才能开始的，也就是css任务依赖less任务的完成，对于这样的有依赖的任务，可以在task中通过第二个参数指定依赖的任务，如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;css&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;less&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// do something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><p>这样在运行css任务前，会先执行less任务，因此在默认任务里就不需要less任务了。</p><h3 id="压缩html">压缩HTML</h3><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">gulp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">htmlMin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-htmlmin&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">htmlMin</span><span class="p">({</span><span class="nx">collapseWhitespace</span><span class="o">:</span> <span class="kc">true</span><span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;dist/&#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="半自动构建">半自动构建</h3><p>任务需求：监听文件改动，自动执行默认构建</p><p>使用<code>gulp-livereload</code>插件。首先，在相关的任务里接上<code>.pipe(livereload())</code>，然后启动监听，并通过<code>gulp.watch</code>监视文件改动：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">// ... 为了排版美观，省略了部分代码，下同
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">livereload</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-livereload&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;js&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册转换less的任务 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;less&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;src/less/*.less&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">less</span><span class="p">())</span>  <span class="cm">/* 使用less编译，文件后缀自动转为.css */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;src/css/&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册合并压缩css文件 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;css&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;less&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册半自动监视任务 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 开启监听 */</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">livereload</span><span class="p">.</span><span class="nx">listen</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 确认监听的目标以及绑定相应的任务 */</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">(</span><span class="s1">&#39;src/js/*&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;js&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">([</span><span class="s1">&#39;src/css/*.css&#39;</span><span class="p">,</span> <span class="s1">&#39;src/less/*.less&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="全自动构建">全自动构建</h3><p>在半自动构建中，我们仍需手动打开浏览器并刷新，在本节可以将这些操作也自动化。为了实现自动打开浏览器，可以使用<code>open</code>完成（注意它不是gulp插件）；为了在修改文件后自动构建并自动刷新，可以使用插件<code>gulp-connect</code>来完成，它内置了一个小型server。为此，还需要在相关的任务里接上<code>.pipe(connect.reload())</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">// ... 为了排版美观，省略了部分代码，下同
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">livereload</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-livereload&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">connect</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-connect&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">open</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;js&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册转换less的任务 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;less&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;src/less/*.less&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">less</span><span class="p">())</span>  <span class="cm">/* 使用less编译，文件后缀自动转为.css */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;src/css/&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册合并压缩css文件 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;css&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;less&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">livereload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 注册全自动监视任务 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 配置服务器的选项 */</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">connect</span><span class="p">.</span><span class="nx">server</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;dist/&#39;</span><span class="p">,</span>  <span class="cm">/* 配置根目录 */</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">livereload</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>  <span class="cm">/* 实时刷新 */</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">port</span><span class="o">:</span> <span class="mi">5000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">open</span><span class="p">(</span><span class="s1">&#39;http://localhost:5000/&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">(</span><span class="s1">&#39;src/js/*&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;js&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">([</span><span class="s1">&#39;src/css/*.css&#39;</span><span class="p">,</span> <span class="s1">&#39;src/less/*.less&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;css&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="自动加载插件">自动加载插件</h3><p>可以使用<code>gulp-load-plugins</code>插件自动加载需要的插件，而不需要显式require各插件，使用<code>$.插件名</code>的方式直接使用插件，不需要<code>gulp-</code>前缀，将带<code>-</code>的插件名改为驼峰命名的方式即可。以下是部分替换表：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">gulp</span><span class="o">-</span><span class="nx">concat</span> <span class="o">-&gt;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">concat</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="o">-</span><span class="nx">htmlmin</span> <span class="o">-&gt;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">htmlmin</span>
+</span></span><span class="line"><span class="cl"><span class="nx">gulp</span><span class="o">-</span><span class="nx">clean</span><span class="o">-</span><span class="nx">css</span> <span class="o">-&gt;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">cleanCss</span>
+</span></span></code></pre></td></tr></table></div></div><p>当然，<code>gulp-load-plugins</code>插件本身还是需要加载的，需要注意的是它是个函数，后面需要加上<code>()</code>。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;gulp-load-plugins&#39;</span><span class="p">)();</span>
+</span></span></code></pre></td></tr></table></div></div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
+<a href="/tags/gulp/">Gulp</a></div><nav class="post-nav"><a class="prev" href="/p/878k6/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Charles抓包App的HTTPS请求并解决SSL Pinning</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/86bgk/"><span class="next-text nav-default">MacOS利用自动操作添加右键压缩图片</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

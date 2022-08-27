@@ -1,0 +1,107 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>systemd-modules-load.service启动失败问题排查 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="我的电脑在启动时总会提示“Failed to start Load Kernel Modules&amp;quot;： 虽然不影响使用，可强迫症看了还是会觉得难受。所以，还是着手解决下，"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7ve9p/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="systemd-modules-load.service启动失败问题排查"><meta property="og:description" content="我的电脑在启动时总会提示“Failed to start Load Kernel Modules&#34;： 虽然不影响使用，可强迫症看了还是会觉得难受。所以，还是着手解决下，"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7ve9p/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-05-28T01:01:00+08:00"><meta property="article:modified_time" content="2019-05-28T01:01:00+08:00"><meta itemprop="name" content="systemd-modules-load.service启动失败问题排查"><meta itemprop="description" content="我的电脑在启动时总会提示“Failed to start Load Kernel Modules&#34;： 虽然不影响使用，可强迫症看了还是会觉得难受。所以，还是着手解决下，"><meta itemprop="datePublished" content="2019-05-28T01:01:00+08:00"><meta itemprop="dateModified" content="2019-05-28T01:01:00+08:00"><meta itemprop="wordCount" content="1319"><meta itemprop="keywords" content="Linux,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="systemd-modules-load.service启动失败问题排查"><meta name="twitter:description" content="我的电脑在启动时总会提示“Failed to start Load Kernel Modules&#34;： 虽然不影响使用，可强迫症看了还是会觉得难受。所以，还是着手解决下，"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">systemd-modules-load.service启动失败问题排查</h1><div class="post-meta"><span class="post-time">2019-05-28</span>
+<span class="more-meta">约 1319 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#日志分析">日志分析</a></li><li><a href="#linux模块加载">Linux模块加载</a></li><li><a href="#参考文献">参考文献</a></li></ul></li></ul></nav></div></div><div class="post-content"><p>我的电脑在启动时总会提示“Failed to start Load Kernel Modules"：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7ve9p/1558976478.jpg" alt></p><p>虽然不影响使用，可强迫症看了还是会觉得难受。所以，还是着手解决下，顺便总结下Linux下service启动失败时一般的排查方法。</p><p>这个问题是<code>systemd-modules-load.service</code>启动失败，因为 Failed to find module &lsquo;vfs_monitor&rsquo;，下面给出排查过程和解决方案。</p><h2 id="日志分析">日志分析</h2><p>首先，查看哪些服务启动失败：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ systemctl --failed
+</span></span><span class="line"><span class="cl">  UNIT                         LOAD   ACTIVE SUB    DESCRIPTION
+</span></span><span class="line"><span class="cl">● systemd-modules-load.service loaded failed failed Load Kernel Modules
+</span></span></code></pre></td></tr></table></div></div><p>或者可以打印出错的日志：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ journalctl -fp err
+</span></span></code></pre></td></tr></table></div></div><p>可以发现<code>systemd-modules-load</code>出了问题，可以查看它的状态：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ systemctl status systemd-modules-load.service
+</span></span><span class="line"><span class="cl">● systemd-modules-load.service - Load Kernel Modules
+</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/systemd-modules-load.service<span class="p">;</span> static<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Active: failed <span class="o">(</span>Result: exit-code<span class="o">)</span> since <span class="p">;</span> 6min ago
+</span></span><span class="line"><span class="cl">     Docs: man:systemd-modules-load.service<span class="o">(</span>8<span class="o">)</span>
+</span></span><span class="line"><span class="cl">           man:modules-load.d<span class="o">(</span>5<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  Process: <span class="m">684</span> <span class="nv">ExecStart</span><span class="o">=</span>/usr/lib/systemd/systemd-modules-load <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>no-zero<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> Main PID: <span class="m">684</span> <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>1/FAILURE<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HP systemd<span class="o">[</span>1<span class="o">]</span>: Starting Load Kernel Modules...
+</span></span></code></pre></td></tr></table></div></div><p><em>去掉了日期时间，下同。</em></p><p>如果没有列出Process ID，可以重启下服务，就可以看到Process ID了。比如说，本例中Process ID就是684。</p><p>有了Process ID，就可以深入研究这个错误了。我们可以通过下面这个命令来从日志中筛选出与这个Process ID相关的日志（_PID的值替换为相应的Process ID）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ journalctl <span class="nv">_PID</span><span class="o">=</span><span class="m">684</span>
+</span></span><span class="line"><span class="cl">-- Reboot --
+</span></span><span class="line"><span class="cl">HP systemd-modules-load<span class="o">[</span>684<span class="o">]</span>: Failed to find module <span class="s1">&#39;vfs_monitor&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>Process ID是进程号。当然，操作系统可能给别的进程分配这个进程号，进程号前面就是这个进程的名字了。由于我们关心<code>systemd-modules-load</code>，所以注意与之相关的日志。</p><p>除了使用Process ID进行筛选，还可以直接使用服务名进行筛选：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ journalctl <span class="nv">_SYSTEMD_UNIT</span><span class="o">=</span>systemd-modules-load.service
+</span></span><span class="line"><span class="cl">HP systemd-modules-load<span class="o">[</span>382<span class="o">]</span>: Failed to find module <span class="s1">&#39;vfs_monitor&#39;</span>
+</span></span><span class="line"><span class="cl">-- Reboot --
+</span></span><span class="line"><span class="cl">HP systemd-modules-load<span class="o">[</span>456<span class="o">]</span>: Failed to find module <span class="s1">&#39;vfs_monitor&#39;</span>
+</span></span><span class="line"><span class="cl">-- Reboot --
+</span></span><span class="line"><span class="cl">HP systemd-modules-load<span class="o">[</span>472<span class="o">]</span>: Failed to find module <span class="s1">&#39;vfs_monitor&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意这里写的是服务名，所以要带上<code>.service</code>，对应查看状态里的Loaded那一项。</p><p>可以发现是由于找不到<code>vfs_monitor</code>这个模块导致的。如果不知道这些日志筛选方法，也可以直接用<code>-xe</code>选项来查看，然后肉眼筛选：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ journalctl -xe
+</span></span></code></pre></td></tr></table></div></div><p>通过一番Google，我大致知道了这个和<code>deepin-anything</code>有关。</p><h2 id="linux模块加载">Linux模块加载</h2><p>Linux系统加载哪些内核模块，和配置文件有关系。模块保存在<code>/lib/modules/</code>下。<code>/etc/modprobe.d/</code>下配置模块加载时的一些参数，也可以利用<code>blacklist</code>来屏蔽模块的自动加载。例如，在安装NVIDIA显卡驱动时，需要屏蔽开源的<code>nouveau</code>驱动，就可以将其加入<code>blacklist</code>。</p><p>可以配置启动时加载哪些内核模块，一般位于<code>/etc/modules-load.d/</code>。比如，对于virtual box虚拟机：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ cat /etc/modules-load.d/virtualbox.conf
+</span></span><span class="line"><span class="cl">vboxdrv
+</span></span><span class="line"><span class="cl">vboxnetflt
+</span></span><span class="line"><span class="cl">vboxnetadp
+</span></span><span class="line"><span class="cl">vboxpci
+</span></span></code></pre></td></tr></table></div></div><p>除此之外，还有<code>/usr/lib/modprobe.d/</code>目录，这个一般是应用程序配置需要加载的模块。例如，<code>vfs_monitor</code>就是<code>deepin-anything</code>配置的需要加载的模块：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ cat /usr/lib/modules-load.d/anything.conf
+</span></span><span class="line"><span class="cl">vfs_monitor
+</span></span></code></pre></td></tr></table></div></div><p>不过，这个只能在Deepin桌面下使用，而我用的Xfce4桌面。所以，<strong>可以将其禁用</strong>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ cat /usr/lib/modules-load.d/anything.conf
+</span></span><span class="line"><span class="cl"><span class="c1"># vfs_monitor</span>
+</span></span></code></pre></td></tr></table></div></div><p>之后再重启<code>systemd-modules-load.service</code>，再查看状态，终于正常了：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ systemctl status systemd-modules-load.service
+</span></span><span class="line"><span class="cl">● systemd-modules-load.service - Load Kernel Modules
+</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/systemd-modules-load.service<span class="p">;</span> static<span class="p">;</span> vendor preset: disabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Active: active <span class="o">(</span>exited<span class="o">)</span> since  CST<span class="p">;</span> 1h 15min ago
+</span></span><span class="line"><span class="cl">     Docs: man:systemd-modules-load.service<span class="o">(</span>8<span class="o">)</span>
+</span></span><span class="line"><span class="cl">           man:modules-load.d<span class="o">(</span>5<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  Process: <span class="m">20926</span> <span class="nv">ExecStart</span><span class="o">=</span>/usr/lib/systemd/systemd-modules-load <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> Main PID: <span class="m">20926</span> <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后，ArchWiki真不错～</p><h2 id="参考文献">参考文献</h2><ul><li><a href="https://superuser.com/questions/997938/how-do-i-figure-out-why-systemctl-service-systemd-modules-load-fails">linux - How do I figure out why systemctl service &ldquo;systemd-modules-load&rdquo; fails? - Super User</a></li><li><a href="https://wiki.archlinux.org/index.php/Systemd">systemd - ArchWiki</a></li><li><a href="https://wiki.archlinux.org/index.php/Kernel_module">Kernel module - ArchWiki</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/linux/">Linux</a></div><nav class="post-nav"><a class="prev" href="/p/7vexu/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Hexo博客同步至CSDN</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7v8q4/"><span class="next-text nav-default">SSH内网穿透</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

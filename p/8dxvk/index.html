@@ -1,0 +1,410 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>LockSupport源码分析 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="LockSupport简介 LockSupport可以控制线程的状态，从而达到线程在等待唤醒之间切换的目的，并且不用担心阻塞和唤醒操作的顺序，"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8dxvk/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="LockSupport源码分析"><meta property="og:description" content="LockSupport简介 LockSupport可以控制线程的状态，从而达到线程在等待唤醒之间切换的目的，并且不用担心阻塞和唤醒操作的顺序，"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8dxvk/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-01-17T21:20:19+08:00"><meta property="article:modified_time" content="2021-01-17T21:20:19+08:00"><meta itemprop="name" content="LockSupport源码分析"><meta itemprop="description" content="LockSupport简介 LockSupport可以控制线程的状态，从而达到线程在等待唤醒之间切换的目的，并且不用担心阻塞和唤醒操作的顺序，"><meta itemprop="datePublished" content="2021-01-17T21:20:19+08:00"><meta itemprop="dateModified" content="2021-01-17T21:20:19+08:00"><meta itemprop="wordCount" content="3389"><meta itemprop="keywords" content="Java,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="LockSupport源码分析"><meta name="twitter:description" content="LockSupport简介 LockSupport可以控制线程的状态，从而达到线程在等待唤醒之间切换的目的，并且不用担心阻塞和唤醒操作的顺序，"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">LockSupport源码分析</h1><div class="post-meta"><span class="post-time">2021-01-17</span>
+<span class="more-meta">约 3389 字</span>
+<span class="more-meta">预计阅读 7 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#locksupport简介">LockSupport简介</a></li><li><a href="#parker">Parker</a></li><li><a href="#unpark">unpark</a><ul><li><a href="#pthread简介">pthread简介</a></li><li><a href="#条件变量">条件变量</a></li></ul></li><li><a href="#park">park</a><ul><li><a href="#xchg">xchg</a></li><li><a href="#内存屏障">内存屏障</a></li></ul></li><li><a href="#参考资料">参考资料</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="locksupport简介">LockSupport简介</h2><p>LockSupport可以控制线程的状态，从而达到线程在等待唤醒之间切换的目的，并且不用担心阻塞和唤醒操作的顺序，但要注意连续多次唤醒的效果和一次唤醒是一样的。</p><p>注意：unpark 函数可以先于 park 调用。</p><p><strong>【LockSupport与的区别】</strong></p><ul><li>LockSupport.park和unpark不需要在同步代码块中，wait和notify是需要的。</li><li>LockSupport的pork和unpark是针对线程的，而wait和notify是可以是任意对象。</li><li>LockSupport的unpark可以让指定线程被唤醒，但是notify是随机唤醒一个，notifyAll是全部唤醒，不够灵活。</li></ul><p>park和unpark都是调用native方法，由JVM实现：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// java/util/concurrent/locks/LockSupport.java
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">park</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">U</span><span class="o">.</span><span class="na">park</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">0L</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// jdk/internal/misc/Unsafe.java
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@HotSpotIntrinsicCandidate</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">park</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">isAbsolute</span><span class="o">,</span> <span class="kt">long</span> <span class="n">time</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// java/util/concurrent/locks/LockSupport.java
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">unpark</span><span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">U</span><span class="o">.</span><span class="na">unpark</span><span class="o">(</span><span class="n">thread</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// jdk/internal/misc/Unsafe.java
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@HotSpotIntrinsicCandidate</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">unpark</span><span class="o">(</span><span class="n">Object</span> <span class="n">thread</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="parker">Parker</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/share/runtime/thread.hpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// JSR166 per-thread parker
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Parker</span><span class="o">*</span>    <span class="n">_parker</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Parker</span><span class="o">*</span>     <span class="n">parker</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_parker</span><span class="p">;</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>线程内持有一个Parker类型的指针_parker，Parker类的定义里有个_counter变量：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Parker</span><span class="p">()</span> <span class="o">:</span> <span class="n">PlatformParker</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_counter</span>       <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FreeNext</span>       <span class="o">=</span> <span class="nb">NULL</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">AssociatedWith</span> <span class="o">=</span> <span class="nb">NULL</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="unpark">unpark</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/share/prims/unsafe.cpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">UNSAFE_ENTRY</span><span class="p">(</span><span class="kt">void</span><span class="p">,</span> <span class="n">Unsafe_Unpark</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">unsafe</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">jthread</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Parker</span><span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">jthread</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ThreadsListHandle</span> <span class="n">tlh</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">JavaThread</span><span class="o">*</span> <span class="n">thr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">     <span class="c1">// oop是oopDesc*的别名，oopDesc是object类的基类，是对Java对象的描述，便于在C++中访问对象中的域。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">oop</span> <span class="n">java_thread</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 将线程引用转为Java线程对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">tlh</span><span class="p">.</span><span class="n">cv_internal_thread_to_JavaThread</span><span class="p">(</span><span class="n">jthread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">java_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">java_thread</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 尝试通过缓存的_parker的偏移量（_park_event_offset）来获取_parker的地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">jlong</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">java_lang_Thread</span><span class="o">::</span><span class="n">park_event</span><span class="p">(</span><span class="n">java_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">lp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 将地址转为Parker指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">Parker</span><span class="o">*</span><span class="p">)</span><span class="n">addr_from_java</span><span class="p">(</span><span class="n">lp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 如果没有缓存_parker的偏移量（偏移量默认为0）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">thr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">p</span> <span class="o">=</span> <span class="n">thr</span><span class="o">-&gt;</span><span class="n">parker</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="c1">// 缓存_parker的偏移量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">java_lang_Thread</span><span class="o">::</span><span class="n">set_park_event</span><span class="p">(</span><span class="n">java_thread</span><span class="p">,</span> <span class="n">addr_to_java</span><span class="p">(</span><span class="n">p</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HOTSPOT_THREAD_UNPARK</span><span class="p">((</span><span class="n">uintptr_t</span><span class="p">)</span> <span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 调用Parker的unpark方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">unpark</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">UNSAFE_END</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/share/classfile/javaClasses.cpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">jlong</span> <span class="n">java_lang_Thread</span><span class="o">::</span><span class="n">park_event</span><span class="p">(</span><span class="n">oop</span> <span class="n">java_thread</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">_park_event_offset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">java_thread</span><span class="o">-&gt;</span><span class="n">long_field</span><span class="p">(</span><span class="n">_park_event_offset</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>oopDesc是object类的基类，是对Java对象的描述，便于在C++中访问对象中的域。上面的代码主要是利用_parker在线程对象内的偏移量来获取Parker对象_parker，并调用其unpark方法。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/os/posix/os_posix.cpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="n">Parker</span><span class="o">::</span><span class="n">unpark</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">_counter</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">_counter</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// must capture correct index before unlocking
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">_cur_index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// s记录的是unpark之前的_counter数，如果s &lt; 1，说明有可能该线程在等待状态，需要唤醒。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 发信号唤醒线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_cond</span><span class="p">[</span><span class="n">index</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>_cur_index 有3个值：-1，0，1，默认是-1。_cur_index代表被使用cond的index。</p><p><strong>【pthread_mutex_unlock、pthread_cond_signal先后顺序】</strong></p><p>解锁互斥量mutex和发出唤醒信号condition_signal是两个单独的操作，那么就存在一个顺序的问题。谁先随后可能会产生不同的结果。如下：</p><ol><li>按照 condition_signal(); unlock(mutext)顺序，当等待线程被唤醒时，它试图锁住mutex,但是如果此时mutex还未解锁，则线程又进入睡眠，mutex成功解锁后，此线程在再次被唤醒并锁住mutex，从而从condition_wait()中返回。</li><li>按照 unlock(mutex); condition_signal()顺序， 当等待的线程被唤醒时，因为mutex已经解锁，因此被唤醒的线程很容易就锁住了mutex然后从conditon_wait()中返回了。</li></ol><p>对于1，等待线程可能会发生2次的上下文切换，严重影响性能。可以使用<code>wait morphing</code>优化：如果线程被唤醒但是不能锁住mutex,则线程被转移(morphing)到互斥量mutex的等待队列中，避免了上下文的切换造成的开销。</p><p>对于2，是一种优化，不过可能引起的问题是线程的优先级倒置，实时系统对可预测性要求高，而普通的应用程序不是问题。</p><h3 id="pthread简介">pthread简介</h3><p>POSIX线程（POSIX threads），简称Pthreads，是线程的POSIX标准。该标准定义了创建和操纵线程的一整套API。在类Unix操作系统（Unix、Linux、Mac OS X等）中，都使用Pthreads作为操作系统的线程。</p><p>Pthreads API中的函数可以非正式的划分为三大类：</p><ul><li>线程管理（Thread management）: 第一类函数直接用于线程：创建（creating），分离（detaching），连接（joining）等等。包含了用于设置和查询线程属性（可连接，调度属性等）的函数。</li><li>互斥量（Mutexes）: 第二类函数是用于线程同步的，称为互斥量（mutexes），是"mutual exclusion"的缩写。
+Mutex函数提供了创建，销毁，锁定和解锁互斥量的功能。同时还包括了一些用于设定或修改互斥量属性的函数。</li><li>条件变量（Condition variables）：第三类函数处理共享一个互斥量的线程间的通信，基于程序员指定的条件。这类函数包括指定的条件变量的创建，销毁，等待和受信（signal）。设置查询条件变量属性的函数也包含其中。</li></ul><h3 id="条件变量">条件变量</h3><p>条件变量对于 wait 端：</p><ol><li>必须与 mutex 一起使用，该布尔表达式的读写需受此 mutex 保护。</li><li>在 mutex 已上锁的时候才能调用 wait()。</li><li>把判断布尔条件和 wait() 放到 while 循环中。</li></ol><p>对于 signal/broadcast 端：</p><ol><li>不一定要在 mutex 已上锁的情况下调用 signal （理论上）。</li><li>在 signal 之前一般要修改布尔表达式。</li><li>修改布尔表达式通常要用 mutex 保护（至少用作 full memory barrier）。</li><li>注意区分 signal 与 broadcast：“broadcast 通常用于表明状态变化，signal 通常用于表示资源可用。（broadcast should generally be used to indicate state change rather than resource availability。）</li></ol><p>总之，使用条件变量，调用 signal() 的时候无法知道是否已经有线程等待在 wait() 上。因此一般总是 <strong>要先修改“条件”，使其为 true，再调用 signal()；这样 wait 线程先检查“条件”，只有当条件不成立时才去 wait()，避免了丢事件的可能</strong> 。换言之，通过使用“条件”，将边沿触发（edge trigger）改为电平触发（level trigger）。这里 <strong>“修改条件”和“检查条件”都必须在 mutex 保护下进行，而且这个 mutex 必须用于配合 wait()</strong> 。</p><h2 id="park">park</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/os/posix/os_posix.cpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="n">Parker</span><span class="o">::</span><span class="n">park</span><span class="p">(</span><span class="kt">bool</span> <span class="n">isAbsolute</span><span class="p">,</span> <span class="n">jlong</span> <span class="n">time</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 原子性地将_counter置为0，如果_counter原值大于0，说明已获得许可，直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">Atomic</span><span class="o">::</span><span class="n">xchg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_counter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Thread</span><span class="o">*</span> <span class="kr">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">::</span><span class="n">current</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">is_Java_thread</span><span class="p">(),</span> <span class="s">&#34;Must be JavaThread&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">JavaThread</span> <span class="o">*</span><span class="n">jt</span> <span class="o">=</span> <span class="p">(</span><span class="n">JavaThread</span> <span class="o">*</span><span class="p">)</span><span class="kr">thread</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果线程被中断，直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">Thread</span><span class="o">::</span><span class="n">is_interrupted</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">false</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="nc">timespec</span> <span class="n">absTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果isAbsolute为true，time表示等到某个时刻，否则time表示等待多久
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 如果time不合法，或是要等到纪元时间时间（显然已过），则直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="p">(</span><span class="n">isAbsolute</span> <span class="o">&amp;&amp;</span> <span class="n">time</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// don&#39;t wait at all
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 将time统一转为绝对时刻
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">to_abstime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">absTime</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">isAbsolute</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 进入安全区
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ThreadBlockInVM</span> <span class="nf">tbivm</span><span class="p">(</span><span class="n">jt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次判断线程是否被中断，如果没有被中断，尝试获得互斥锁，如果获取失败，直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">Thread</span><span class="o">::</span><span class="n">is_interrupted</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">false</span><span class="p">)</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">      <span class="n">pthread_mutex_trylock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">status</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次检查_counter，如果&gt;0，不需要等待
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">_counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="p">{</span> <span class="c1">// no wait needed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="c1">// 将_counter置为0，并释放锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 插入内存屏障，确保_counter的可见性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">OrderAccess</span><span class="o">::</span><span class="n">fence</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// 设置线程状态为CONDVAR_WAIT
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">OSThreadWaitState</span> <span class="nf">osts</span><span class="p">(</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">osthread</span><span class="p">(),</span> <span class="nb">false</span> <span class="cm">/* not Object.wait() */</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">jt</span><span class="o">-&gt;</span><span class="n">set_suspend_equivalent</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">_cur_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 如果time为0，表示不设等待超时
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="c1">// 让线程等待_cond[REL_INDEX]信号，线程进入等待状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">_cur_index</span> <span class="o">=</span> <span class="n">REL_INDEX</span><span class="p">;</span> <span class="c1">// arbitrary choice when not timed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_cond</span><span class="p">[</span><span class="n">_cur_index</span><span class="p">],</span> <span class="n">_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;cond_timedwait&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 线程进入有超时的等待
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">_cur_index</span> <span class="o">=</span> <span class="n">isAbsolute</span> <span class="o">?</span> <span class="nl">ABS_INDEX</span> <span class="p">:</span> <span class="n">REL_INDEX</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_cond_timedwait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_cond</span><span class="p">[</span><span class="n">_cur_index</span><span class="p">],</span> <span class="n">_mutex</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">absTime</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ETIMEDOUT</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">status</span><span class="p">,</span> <span class="s">&#34;cond_timedwait&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 等待结束后，恢复变量，释放锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_cur_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">status</span> <span class="o">=</span> <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert_status</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="s">&#34;invariant&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 插入内存屏障
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">OrderAccess</span><span class="o">::</span><span class="n">fence</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">jt</span><span class="o">-&gt;</span><span class="n">handle_special_suspend_equivalent_condition</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">jt</span><span class="o">-&gt;</span><span class="n">java_suspend_self</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="xchg">xchg</h3><p>xchg 在x86平台是直接调用xchg指令：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/os_cpu/linux_x86/atomic_linux_x86.hpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">inline</span> <span class="n">T</span> <span class="n">Atomic</span><span class="o">::</span><span class="n">PlatformXchg</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">&gt;::</span><span class="k">operator</span><span class="p">()(</span><span class="n">T</span> <span class="n">exchange_value</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">T</span> <span class="k">volatile</span><span class="o">*</span> <span class="n">dest</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">atomic_memory_order</span> <span class="n">order</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">STATIC_ASSERT</span><span class="p">(</span><span class="mi">4</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__asm__</span> <span class="nf">volatile</span> <span class="p">(</span>  <span class="s">&#34;xchgl (%2)</span><span class="p">,</span><span class="o">%</span><span class="mi">0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">:</span> <span class="s">&#34;=r&#34;</span> <span class="p">(</span><span class="n">exchange_value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">:</span> <span class="s">&#34;0&#34;</span> <span class="p">(</span><span class="n">exchange_value</span><span class="p">),</span> <span class="s">&#34;r&#34;</span> <span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">:</span> <span class="s">&#34;memory&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">exchange_value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="内存屏障">内存屏障</h3><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// src/hotspot/os_cpu/linux_x86/orderAccess_linux_x86.hpp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">inline</span> <span class="kt">void</span> <span class="n">OrderAccess</span><span class="o">::</span><span class="n">fence</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">// always use locked addl since mfence is sometimes expensive
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#ifdef AMD64
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>  <span class="n">__asm__</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">&#34;lock; addl $0,0(%%rsp)&#34;</span> <span class="o">:</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&#34;cc&#34;</span><span class="p">,</span> <span class="s">&#34;memory&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>  <span class="n">__asm__</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">&#34;lock; addl $0,0(%%esp)&#34;</span> <span class="o">:</span> <span class="o">:</span> <span class="o">:</span> <span class="s">&#34;cc&#34;</span><span class="p">,</span> <span class="s">&#34;memory&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>  <span class="n">compiler_barrier</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="参考资料">参考资料</h2><ul><li><a href="https://juejin.cn/post/6844903938202796039">啃透Java并发-LockSupport源码详解</a></li><li><a href="https://www.iteye.com/blog/siwind-1469216">多线程编程中条件变量和虚假唤醒(spurious wakeup)的讨论</a></li><li><a href="http://www.cppblog.com/Solstice/archive/2013/09/09/203094.html">用条件变量实现事件等待器的正确与错误做法</a></li><li><a href="https://docs.oracle.com/cd/E19620-01/805-4693/instructionset-124/index.html">Exchange Register / Memory With Register (xchg)</a></li><li><a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">Extended Asm (Using the GNU Compiler Collection (GCC))</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/java/">Java</a></div><nav class="post-nav"><a class="prev" href="/p/8ikmq/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">《Java NIO系列教程》学习笔记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8cnc1/"><span class="next-text nav-default">Kafka 2.6卡住,Topic not present in metadata</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

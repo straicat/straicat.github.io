@@ -1,0 +1,102 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>【实验楼】HBASE教程——学习笔记 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="HBase环境搭建与配置 HBase解压即可使用。 【注意】伪分布模式下，HBase需要与Hadoop版本匹配，可以看HBase的lib里Had"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7czq8/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="【实验楼】HBASE教程——学习笔记"><meta property="og:description" content="HBase环境搭建与配置 HBase解压即可使用。 【注意】伪分布模式下，HBase需要与Hadoop版本匹配，可以看HBase的lib里Had"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7czq8/"><meta property="article:section" content="post"><meta property="article:published_time" content="2017-10-08T18:08:00+08:00"><meta property="article:modified_time" content="2017-10-08T18:08:00+08:00"><meta itemprop="name" content="【实验楼】HBASE教程——学习笔记"><meta itemprop="description" content="HBase环境搭建与配置 HBase解压即可使用。 【注意】伪分布模式下，HBase需要与Hadoop版本匹配，可以看HBase的lib里Had"><meta itemprop="datePublished" content="2017-10-08T18:08:00+08:00"><meta itemprop="dateModified" content="2017-10-08T18:08:00+08:00"><meta itemprop="wordCount" content="840"><meta itemprop="keywords" content="实验楼,Hbase,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="【实验楼】HBASE教程——学习笔记"><meta name="twitter:description" content="HBase环境搭建与配置 HBase解压即可使用。 【注意】伪分布模式下，HBase需要与Hadoop版本匹配，可以看HBase的lib里Had"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">【实验楼】HBASE教程——学习笔记</h1><div class="post-meta"><span class="post-time">2017-10-08</span>
+<span class="more-meta">约 840 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#hbase环境搭建与配置">HBase环境搭建与配置</a></li><li><a href="#hbase基本操作">HBase基本操作</a></li><li><a href="#hbase应用程序开发">HBase应用程序开发</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="hbase环境搭建与配置">HBase环境搭建与配置</h2><p>HBase解压即可使用。</p><p>【注意】伪分布模式下，HBase需要与Hadoop版本匹配，可以看HBase的lib里Hadoop的jar文件版本。</p><p>需要配置<code>hbase-site.xml</code>，可以使用自带的Zookeeper。</p><p>单机模式配置如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;property&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;value&gt;</span>file:///tmp/hbase-${user.name}/hbase<span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/configuration&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>伪分布模式配置如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;property&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;value&gt;</span>hdfs://localhost:9000/hbase<span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;property&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;name&gt;</span>hbase.cluster.distributed<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/configuration&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>配置<code>hbase-env.sh</code>，需要设置<code>JAVA_HOME</code>和<code>HBASE_MANAGES_ZK</code>。使用自带的Zookeeper时，<code>HBASE_MANAGES_ZK=true</code></p><p>启动HBase：<code>start-hbase.sh</code>，停止HBase：<code>stop-hbase.sh</code></p><p>注意：若是伪分布模式，需要先启动HDFS。停止时先停HBase。</p><p>进入HBase Shell：<code>hbase shell</code></p><h2 id="hbase基本操作">HBase基本操作</h2><p>显示帮助：<code>help</code></p><p>显示状态：<code>status</code></p><p>退出HBase：<code>quit</code></p><p>创建新表：<code>create '表名', '列族名'</code></p><p>列举表信息：<code>list</code>、<code>list '表名'</code></p><p>获取表描述：<code>describe '表名'</code></p><p>删除表：删除表之前，先<code>disable</code>表，再<code>drop</code>表</p><p>检查表是否存在：<code>exists '表名'</code></p><p>禁用表：<code>disable '表名'</code>，启用表：<code>enable '表名'</code></p><p>向表中插入数据：<code>put '表名', '行', '列族:列', '值'</code></p><p>一次性扫描全表数据：<code>scan '表名'</code></p><p>获取一行数据：<code>get '表名', '行'</code></p><h2 id="hbase应用程序开发">HBase应用程序开发</h2><p><code>org.apache.hadoop.hbase</code>包下常用类：</p><ul><li><p>HBaseConfiguration HBase配置</p></li><li><p>HColumnDescriptor 列族描述符，指定列族相关信息</p></li><li><p>HTableDescriptor 表名描述符，指定表相关信息</p></li></ul><p><code>org.apache.hadoop.hbase.client</code>包下常用类：</p><ul><li><p>HBaseAdmin HBase管理（判断表是否存在、创建表等）</p></li><li><p>HTable 表</p></li><li><p>Get 获取数据</p></li><li><p>Put 添加数据</p></li><li><p>Scan</p></li><li><p>Result</p></li><li><p>ResultScanner</p></li></ul><p>创建表：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">HBaseAdmin</span> <span class="n">admin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HBaseAdmin</span><span class="o">(</span><span class="n">conf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">HTableDescriptor</span> <span class="n">tabDesc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HTableDescriptor</span><span class="o">(</span><span class="n">tableName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">tabDesc</span><span class="o">.</span><span class="na">addFamily</span><span class="o">(</span><span class="k">new</span> <span class="n">HColumnDescriptor</span><span class="o">(</span><span class="n">columnFamily</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">admin</span><span class="o">.</span><span class="na">createTable</span><span class="o">(</span><span class="n">tabDesc</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Table</span> <span class="n">tab</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HTable</span><span class="o">(</span><span class="n">conf</span><span class="o">,</span> <span class="n">tableName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Put</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Put</span><span class="o">(</span><span class="n">Bytes</span><span class="o">.</span><span class="na">toBytes</span><span class="o">(</span><span class="n">row</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Bytes</span><span class="o">.</span><span class="na">toBytes</span><span class="o">(</span><span class="n">columnFamily</span><span class="o">),</span> <span class="n">Bytes</span><span class="o">.</span><span class="na">toBytes</span><span class="o">(</span><span class="n">column</span><span class="o">),</span> <span class="n">Bytes</span><span class="o">.</span><span class="na">toBytes</span><span class="o">(</span><span class="n">data</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">tab</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>获取、扫描数据：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">HTable</span> <span class="n">tab</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HTable</span><span class="o">(</span><span class="n">conf</span><span class="o">,</span> <span class="n">tableName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// get
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Get</span> <span class="n">g</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Get</span><span class="o">(</span><span class="n">Bytes</span><span class="o">.</span><span class="na">toBytes</span><span class="o">(</span><span class="n">row</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">Result</span> <span class="n">r</span><span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// scan
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Scan</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scan</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">ResultScanner</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="na">getScanner</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span><span class="o">(</span><span class="n">Result</span> <span class="n">rst</span><span class="o">:</span><span class="n">rs</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="o">;</span> <span class="c1">// do something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>删除表：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">if</span><span class="o">(</span><span class="n">admin</span><span class="o">.</span><span class="na">tableExists</span><span class="o">(</span><span class="n">tableName</span><span class="o">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">admin</span><span class="o">.</span><span class="na">disableTable</span><span class="o">(</span><span class="n">tableName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">admin</span><span class="o">.</span><span class="na">deleteTable</span><span class="o">(</span><span class="n">tableName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E5%AE%9E%E9%AA%8C%E6%A5%BC/">实验楼</a>
+<a href="/tags/hbase/">Hbase</a></div><nav class="post-nav"><a class="prev" href="/p/7d4wx/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">栈和队列——算法笔记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/6vof6/"><span class="next-text nav-default">Python项目：扇贝网小组查卡助手</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,283 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>Typecho插件开发教程1：登录界面美化 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="本文以登录界面美化为例来介绍Typecho插件开发。之所以选择这个插件，是因为它简单且比较有趣，适合入门学习。 开发环境搭建 工欲善其事，必先利"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/814ou/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="Typecho插件开发教程1：登录界面美化"><meta property="og:description" content="本文以登录界面美化为例来介绍Typecho插件开发。之所以选择这个插件，是因为它简单且比较有趣，适合入门学习。 开发环境搭建 工欲善其事，必先利"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/814ou/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-11-29T19:42:31+08:00"><meta property="article:modified_time" content="2019-11-29T19:42:31+08:00"><meta itemprop="name" content="Typecho插件开发教程1：登录界面美化"><meta itemprop="description" content="本文以登录界面美化为例来介绍Typecho插件开发。之所以选择这个插件，是因为它简单且比较有趣，适合入门学习。 开发环境搭建 工欲善其事，必先利"><meta itemprop="datePublished" content="2019-11-29T19:42:31+08:00"><meta itemprop="dateModified" content="2019-11-29T19:42:31+08:00"><meta itemprop="wordCount" content="3755"><meta itemprop="keywords" content="Typecho,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Typecho插件开发教程1：登录界面美化"><meta name="twitter:description" content="本文以登录界面美化为例来介绍Typecho插件开发。之所以选择这个插件，是因为它简单且比较有趣，适合入门学习。 开发环境搭建 工欲善其事，必先利"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">Typecho插件开发教程1：登录界面美化</h1><div class="post-meta"><span class="post-time">2019-11-29</span>
+<span class="more-meta">约 3755 字</span>
+<span class="more-meta">预计阅读 8 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#开发环境搭建">开发环境搭建</a></li><li><a href="#插件接口">插件接口</a></li><li><a href="#钩子">钩子</a></li><li><a href="#找到合适的钩子">找到合适的钩子</a></li><li><a href="#使用widget">使用Widget</a></li><li><a href="#表单配置">表单配置</a></li><li><a href="#php模板语法">PHP模板语法</a></li></ul></li></ul></nav></div></div><div class="post-content"><p>本文以登录界面美化为例来介绍<code>Typecho</code>插件开发。之所以选择这个插件，是因为它简单且比较有趣，适合入门学习。</p><h2 id="开发环境搭建">开发环境搭建</h2><p>工欲善其事，必先利其器。搭建好开发环境对于后续进行插件开发来说是很重要的，有个好用的 IDE 能有效提升开发效率。这里推荐使用 JetBrains 家的 <code>PhpStorm</code>，配合<code>XDebug</code>插件，来作为我们的开发环境。</p><p><code>PhpStorm</code>的安装，省略。如果有edu邮箱可以免费使用，其余的自行解决。官网：<a href="https://www.jetbrains.com/phpstorm/">PhpStorm: The Lightning-Smart IDE for PHP Programming by JetBrains</a></p><p><code>XDebug</code>的安装，参考官网：<a href="https://xdebug.org/docs/install">Xdebug: Documentation » Installation</a>。</p><p>我的是Linux环境，安装配置总体上还是比较简单的。<code>php.ini</code>里配置<code>xdebug</code>（仅供参考，对于Windows，<code>zend_extension</code>那一行的配置肯定不一样）:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="k">[xdebug]</span>
+</span></span><span class="line"><span class="cl"><span class="na">zend_extension</span><span class="o">=</span><span class="s">/usr/lib/php/modules/xdebug.so</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.remote_enable</span> <span class="o">=</span> <span class="s">1</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.remote_handler</span> <span class="o">=</span> <span class="s">dbgp</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.remote_mode</span> <span class="o">=</span> <span class="s">req</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.remote_host</span> <span class="o">=</span> <span class="s">localhost</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.remote_port</span> <span class="o">=</span> <span class="s">9000</span>
+</span></span><span class="line"><span class="cl"><span class="na">xdebug.idekey</span> <span class="o">=</span> <span class="s">PHPSTORM</span>
+</span></span></code></pre></td></tr></table></div></div><p>之后可以在<code>PhpStorm</code>的设置里的 PHP > Debug 那里验证一下，确认端口号和上面配置的一样（默认：9000），验证全部通过就OK了：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575015865.png" alt></p><p>IDE 拥有代码补全、智能提示、断点调试等功能，在开发过程中还是非常实用的。</p><h2 id="插件接口">插件接口</h2><p>给插件取个名字，假设叫<code>LoginBeautify</code>吧，名字注意不能有<code>_</code>。然后在<code>Typecho</code>的插件目录创建一个和插件名一致的文件夹（也就是<code>LoginBeautify</code>），在新建的这个文件夹下创建文件<code>Plugin.php</code>。这个是<code>Typecho</code>的约定，<code>Typecho</code>会自动扫描插件目录，解析目录下的<code>Plugin.php</code>。</p><p>在<code>Plugin.php</code>内键入以下内容，主要是插件的描述信息，填写一下就行：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">defined</span><span class="p">(</span><span class="s1">&#39;__TYPECHO_ROOT_DIR__&#39;</span><span class="p">))</span> <span class="k">exit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="sd">/**
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * 登录界面美化
+</span></span></span><span class="line"><span class="cl"><span class="sd"> *
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @package LoginBeautify
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @author jlice
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @version 1.0.0
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @link https://muranxuan.top
+</span></span></span><span class="line"><span class="cl"><span class="sd"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">LoginBeautify_Plugin</span> <span class="k">implements</span> <span class="nx">Typecho_Plugin_Interface</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里需要注意两点：</p><ol><li>插件的类名必须是<code>XXX_Plugin</code>（其中<code>XXX</code>为插件的名字），否则<code>Typecho</code>无法正确加载插件。</li><li>必须实现<code>Typecho_Plugin_Interface</code>接口，也就是要<code>implements Typecho_Plugin_Interface</code></li></ol><p><code>Typecho_Plugin_Interface</code>有一些方法需要我们实现。如果像上面这样空着，会报错，此时在红线上按<kbd>Alt+Enter</kbd>快捷键，然后会提示 Add method stubs，然后按<kbd>Enter</kbd>就会自动生成相应的方法代码了，还有默认的注释。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575016568.png" alt></p><p>有4个方法，其含义很好理解。<code>activate</code>和<code>deactivate</code>分别是启用和禁用插件时运行的代码，<code>config</code>和<code>personalConfig</code>分别是插件的配置面板和用户的配置面板（也就是在个人设置那里出现）。</p><p>需要注意的是，上面这些方法都是静态的（有<code>static</code>修饰），粗糙点说就是不能用<code>$this</code>。</p><h2 id="钩子">钩子</h2><p>插件是为了便于扩展程序的功能，<code>Typecho</code>在很多地方预留了钩子，供插件挂载。这个要怎么理解呢？结合钩子的图片：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575017668.jpeg" alt></p><p>假如<code>Typecho</code>的作者觉得某个地方可以交给插件去完成，可以在这个地方放一个钩子，然后插件挂载到这个钩子上（有点像把东西挂在挂钩上），程序在运行时，会检查钩子上有没有挂载插件，如果有会执行插件的代码。</p><p>通过上面的理解，我们可以知道，插件要声明注册到哪个钩子，执行什么代码，这样<code>Typecho</code>才能知道何时执行以及执行什么代码。当然，插件也可以挂载到多个钩子。实际上，<code>Typecho</code>在启用或禁用插件时就会把插件的数据保存到数据库，位于<code>options</code>表里。</p><p>那么，<code>Typecho</code>预留了哪些钩子呢？</p><p><code>Typecho</code>预留的钩子以两种形式出现：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">function</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">pluginHandle</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">function</span><span class="p">();</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果要看所有的钩子，可以参考官方文档，或者在代码里搜索。选择网站的根目录，然后按<kbd>Ctrl+Shift+F</kbd>搜索：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575018791.png" alt></p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575018821.png" alt></p><h2 id="找到合适的钩子">找到合适的钩子</h2><p>钩子那么多，怎么能知道哪个钩子符合自己的需求呢？这个问题，em&mldr;，其实不太好回答。</p><p>我们注意到两个目录：一个是<code>var/Widget/</code>，这里是<code>Typecho</code>的核心代码，里面有<code>Typecho</code>定义的各种<code>Widget</code>；另一个是<code>admin/</code>，这里是后台管理的代码。</p><p><code>Widget</code>是组件的意思，例如<code>Widget_Archive</code>就是输出文章的，例如首页和文章页面。<code>Widget</code>里的钩子可以定制这些组件的行为。具体有哪些组件可以参考官方文档，或者直接看<code>var/Widget/</code>这个目录就可以了。</p><p>钩子的位置有两个层面的意思，或者说为了指定要挂载哪个钩子，我们需要确定两件事：一是这个钩子在哪，对于<code>admin/</code>下的，需要指定<code>.php</code>文件位置，对于<code>var/Widget/</code>里的钩子，只需要指明类名即可（也就是<code>Widget</code>的名字）；二是这个钩子的名字，也就是<code>function</code>的名字。</p><p>下面是一些例子：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="c1">// var/Widget/Upload.php
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nv">$result</span> <span class="o">=</span> <span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;Widget_Upload&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">trigger</span><span class="p">(</span><span class="nv">$hasUploaded</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">uploadHandle</span><span class="p">(</span><span class="nv">$file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Widget： Widget_Upload    function： uploadHandle
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// var/Widget/Contents/Post/Edit.php
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">pluginHandle</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">finishPublish</span><span class="p">(</span><span class="nv">$contents</span><span class="p">,</span> <span class="nv">$this</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Widget: Widget_Contents_Post_Edit    function: finishPublish
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// admin/write-js.php
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;admin/write-js.php&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// php: admin/write-js.php    function: write
+</span></span></span></code></pre></td></tr></table></div></div><p>需要注意的是第一个例子里的<code>trigger</code>并不是钩子的名字，这个是<code>Typecho</code>用来判断是否有插件挂载到这里用的。</p><p>由于我们要做登录界面美化，也就是改登录界面背景，很自然地想到后台管理的登录界面，也就是<code>admin/login.php</code>。然而，这个文件里并没有提供钩子。但是，我们注意到，在这个文件的最后引入了<code>footer.php</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">include</span> <span class="s1">&#39;footer.php&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>按住<kbd>Ctrl</kbd>键点击<code>footer.php</code>，可以跳转到<code>footer.php</code>，而<code>footer.php</code>里有一个钩子：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="sd">/** 注册一个结束插件 */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;admin/footer.php&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">end</span><span class="p">();</span>
+</span></span></code></pre></td></tr></table></div></div><p>于是，我们在插件的<code>activate</code>方法里挂载这个钩子：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;admin/footer.php&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">end</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;LoginBeautify_Plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们把<code>LoginBeautify_Plugin</code>这个类（也就是本插件的类名）的<code>end</code>方法挂载到这个钩子上。不过，我们的<code>LoginBeautify_Plugin</code>类并没有<code>end</code>方法，因此需要添加一个<code>end</code>方法。现在<code>LoginBeautify_Plugin</code>类的代码如下（省略了注释）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">defined</span><span class="p">(</span><span class="s1">&#39;__TYPECHO_ROOT_DIR__&#39;</span><span class="p">))</span> <span class="k">exit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">LoginBeautify_Plugin</span> <span class="k">implements</span> <span class="nx">Typecho_Plugin_Interface</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;admin/footer.php&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">end</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;LoginBeautify_Plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">deactivate</span><span class="p">(){}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">config</span><span class="p">(</span><span class="nx">Typecho_Widget_Helper_Form</span> <span class="nv">$form</span><span class="p">){}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">personalConfig</span><span class="p">(</span><span class="nx">Typecho_Widget_Helper_Form</span> <span class="nv">$form</span><span class="p">){}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">end</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>由于钩子<code>end</code>没有输入参数，所以我们这里增加的<code>end</code>方法也没有输入参数。如果钩子有输入参数，我们对应增加的方法里应该有对应的输入参数。</p><h2 id="使用widget">使用Widget</h2><p>其实后台管理的界面都引入了<code>footer.php</code>，因此，我们需要判断用户的登录状态，当用户没有登录时才修改背景，否则就会影响到后台管理的其它界面。</p><p>我们注意到<code>login.php</code>的最开始有如下代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">include</span> <span class="s1">&#39;common.php&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">hasLogin</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">redirect</span><span class="p">(</span><span class="nv">$options</span><span class="o">-&gt;</span><span class="na">adminUrl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这几行代码的意思是：引入<code>common.php</code>，如果用户已经登录了，就跳转到管理地址。可是，<code>$user</code>、<code>$response</code>和<code>$options</code>这些变量哪来的呢？</p><p>按住<kbd>Ctrl</kbd>键点击<code>common.php</code>，可以跳转到<code>common.php</code>。可以发现如下代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_Options&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$options</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_User&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_Security&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$security</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_Menu&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$menu</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Typecho_Widget::widget</code>是一个工厂方法，可以返回类的实例。<code>to()</code>方法可以把这个实例赋值给某个变量。</p><p>因此，在我们的插件里页可以采用类似的做法（图片地址替换成自己的哦）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">end</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_User&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">hasLogin</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="cp">?&gt;</span><span class="err"> &lt;script&gt;$(&#34;body&#34;).css(&#34;background&#34;, &#34;url(&#39;https://muranxuan.top/usr/uploads/demo.jpg&#39;)&#34;);&lt;/script&gt; &lt;?php
+</span></span></span><span class="line"><span class="cl"><span class="err">    }
+</span></span></span><span class="line"><span class="cl"><span class="err">}
+</span></span></span></code></pre></td></tr></table></div></div><p>当用户没有登录时，我们需要做点事情。这里，我们通过<code>jQuery</code>来修改页面的背景。效果如下：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575025285.png" alt></p><h2 id="表单配置">表单配置</h2><p>目前，页面的背景是写死在代码里的，不支持配置。所以，我们希望插件能配置页面背景的 URL。为此，在<code>config</code>方法里，增加背景 URL 的输入框：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">config</span><span class="p">(</span><span class="nx">Typecho_Widget_Helper_Form</span> <span class="nv">$form</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$url</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Typecho_Widget_Helper_Form_Element_Text</span><span class="p">(</span><span class="s1">&#39;bgUrl&#39;</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="nx">_t</span><span class="p">(</span><span class="s2">&#34;背景URL&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$form</span><span class="o">-&gt;</span><span class="na">addInput</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Typecho_Widget_Helper_Form_Element_Text</code>可以用来创建一个文本框，有5个参数：表单输入项名称，选择项，默认值，标题，描述。</p><p>在<code>end</code>方法里，我们将原先写死的 URL 换成表单里<code>bgUrl</code>的值（注意写法，是上面第1个参数<code>bgUrl</code>哦，不是<code>=</code>左边的<code>$url</code>）：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">end</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_User&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$url</span> <span class="o">=</span> <span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_Options&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">plugin</span><span class="p">(</span><span class="s1">&#39;LoginBeautify&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">bgUrl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">hasLogin</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="cp">?&gt;</span><span class="err"> &lt;script&gt;$(&#34;body&#34;).css(&#34;background&#34;, &#34;url(&lt;?=  $url ?&gt;)&#34;);&lt;/script&gt; &lt;?php
+</span></span></span><span class="line"><span class="cl"><span class="err">    }
+</span></span></span><span class="line"><span class="cl"><span class="err">}
+</span></span></span></code></pre></td></tr></table></div></div><p>这样，我们就可以在插件配置界面去设置背景 URL 了。</p><p>如果出现下面的错误，把插件禁用再启用就可以了：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/814ou/1575026596.png" alt></p><h2 id="php模板语法">PHP模板语法</h2><p>也许对于不熟悉 PHP 的人来说，前面的代码里，用户没有登录时设置背景这一行可能看得不太懂：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span><span class="err">$</span><span class="p">(</span><span class="s2">&#34;body&#34;</span><span class="p">)</span><span class="o">.</span><span class="nx">css</span><span class="p">(</span><span class="s2">&#34;background&#34;</span><span class="p">,</span> <span class="s2">&#34;url(&lt;?=  </span><span class="si">$url</span><span class="s2"> ?&gt;)&#34;</span><span class="p">);</span><span class="o">&lt;/</span><span class="nx">script</span><span class="o">&gt;</span> <span class="o">&lt;?</span><span class="nx">php</span>
+</span></span></code></pre></td></tr></table></div></div><p>首先，<code>?></code>是 PHP 的结束标签，表示 PHP 代码告一段落了。后面接着是输出的 HTML 了。在 HTML 里，我们写了一小段 JavaScript 代码，用来设置背景图片的 URL。为了能在 HTML 里拼接 PHP 里的变量，使用<code>&lt;?= ?></code>这样的模板语法，这样我们就把从插件配置里获取的背景图片 URL 插入到了这里。最后是<code>&lt;?php</code>表示又开始是 PHP 代码了。</p><p>貌似有点绕？我们也可以用纯 PHP 做这件事，这一行代码可以替换为：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="k">echo</span> <span class="s1">&#39;&lt;script&gt;$(&#34;body&#34;).css(&#34;background&#34;, &#34;url(&#39;</span> <span class="o">.</span>  <span class="nv">$url</span> <span class="o">.</span> <span class="s1">&#39;)&#34;);&lt;/script&gt;&#39;</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中，<code>.</code>是 PHP 里字符串拼接符，利用 PHP 拼接出上面的 HTML 内容，然后利用<code>echo</code>输出到页面。</p><p>下面是本插件的全部代码，便于学习：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">defined</span><span class="p">(</span><span class="s1">&#39;__TYPECHO_ROOT_DIR__&#39;</span><span class="p">))</span> <span class="k">exit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="sd">/**
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * 登录界面美化
+</span></span></span><span class="line"><span class="cl"><span class="sd"> *
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @package LoginBeautify
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @author jlice
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @version 1.0.0
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @link https://muranxuan.top
+</span></span></span><span class="line"><span class="cl"><span class="sd"> */</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">LoginBeautify_Plugin</span> <span class="k">implements</span> <span class="nx">Typecho_Plugin_Interface</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">activate</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Typecho_Plugin</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;admin/footer.php&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">end</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;LoginBeautify_Plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">deactivate</span><span class="p">()</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">config</span><span class="p">(</span><span class="nx">Typecho_Widget_Helper_Form</span> <span class="nv">$form</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$url</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Typecho_Widget_Helper_Form_Element_Text</span><span class="p">(</span><span class="nx">_t</span><span class="p">(</span><span class="s1">&#39;bgUrl&#39;</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="nx">_t</span><span class="p">(</span><span class="s2">&#34;背景URL&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$form</span><span class="o">-&gt;</span><span class="na">addInput</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">personalConfig</span><span class="p">(</span><span class="nx">Typecho_Widget_Helper_Form</span> <span class="nv">$form</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">end</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_User&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$url</span> <span class="o">=</span> <span class="nx">Typecho_Widget</span><span class="o">::</span><span class="na">widget</span><span class="p">(</span><span class="s1">&#39;Widget_Options&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">plugin</span><span class="p">(</span><span class="s1">&#39;LoginBeautify&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">bgUrl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">hasLogin</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s1">&#39;&lt;script&gt;$(&#34;body&#34;).css(&#34;background&#34;, &#34;url(&#39;</span> <span class="o">.</span>  <span class="nv">$url</span> <span class="o">.</span> <span class="s1">&#39;)&#34;);&lt;/script&gt;&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>由于本期是<code>Typecho</code>插件教程的第1期，所以写得非常的基础，应该很容易看懂吧（我自己是这么觉得的）。</p><p>如果需要更好的登录界面美化，可以参考这个插件：<a href="https://qqdie.com/archives/typecho-LoginDesigner-plugin.html">Typecho登录/注册美化插件 - Typecho爱好者博客</a></p><p>好了，本期的插件教程就到这里了，你学会了么？赶紧动手试试吧！</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/typecho/">Typecho</a></div><nav class="post-nav"><a class="prev" href="/p/824zt/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">wine安装CAJViewer并解决乱码问题</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/814c7/"><span class="next-text nav-default">【Typecho插件】MyUpload - 图片压缩上传插件，支持TinyPNG！</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

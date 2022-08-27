@@ -1,0 +1,56 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>使用ipv6 hosts - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="一些校园网能使用ipv6，而Google、Youtube等网站支持ipv6。但是，DNS服务器一般返回的是ipv4的地址，因此，可以通过修改"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7q0w4/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="使用ipv6 hosts"><meta property="og:description" content="一些校园网能使用ipv6，而Google、Youtube等网站支持ipv6。但是，DNS服务器一般返回的是ipv4的地址，因此，可以通过修改"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7q0w4/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-12-05T00:04:00+08:00"><meta property="article:modified_time" content="2018-12-05T00:04:00+08:00"><meta itemprop="name" content="使用ipv6 hosts"><meta itemprop="description" content="一些校园网能使用ipv6，而Google、Youtube等网站支持ipv6。但是，DNS服务器一般返回的是ipv4的地址，因此，可以通过修改"><meta itemprop="datePublished" content="2018-12-05T00:04:00+08:00"><meta itemprop="dateModified" content="2018-12-05T00:04:00+08:00"><meta itemprop="wordCount" content="621"><meta itemprop="keywords" content="Linux,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用ipv6 hosts"><meta name="twitter:description" content="一些校园网能使用ipv6，而Google、Youtube等网站支持ipv6。但是，DNS服务器一般返回的是ipv4的地址，因此，可以通过修改"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">使用ipv6 hosts</h1><div class="post-meta"><span class="post-time">2018-12-05</span>
+<span class="more-meta">约 621 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"></nav></div></div><div class="post-content"><p>一些校园网能使用ipv6，而Google、Youtube等网站支持ipv6。但是，DNS服务器一般返回的是ipv4的地址，因此，可以通过修改hosts来直接使用ipv6地址访问这些网站。</p><p>可以先在<a href="https://test-ipv6.com/">IPv6 连接测试</a>来测试是否接入了ipv6。</p><p>在GitHub上有<a href="https://raw.githubusercontent.com/lennylxx/ipv6-hosts/master/hosts">ipv6-hosts</a>，用这个替换系统默认的hosts文件即可直接使用ipv6地址来访问这些网站。</p><p>然而，在使用过程中发现stackoverflow.com不能正常使用了，因此，需要删除stackoverflow.com相关条目，用ipv4访问stackoverflow.com就正常了。</p><p>写这篇文章主要是因为，前一段时间Youtube视频看不了了，通过浏览器开发者工具发现是googlevideo.com访问不了的原因，于是设置了下googlevideo.com相关的hosts。然后今天Youtube直接不能访问了，于是想了想，还是写一个自动更新hosts的小脚本吧：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Download hosts&#34;</span>
+</span></span><span class="line"><span class="cl">curl -s https://raw.githubusercontent.com/lennylxx/ipv6-hosts/master/hosts &gt; /tmp/hosts.tmp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat /etc/hosts.bak &gt; /etc/hosts
+</span></span><span class="line"><span class="cl"><span class="nv">filters</span><span class="o">=(</span>youtube.com googlevideo.com<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> url in <span class="si">${</span><span class="nv">filters</span><span class="p">[@]</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span>
+</span></span><span class="line"><span class="cl">  sed -n <span class="s2">&#34;/&#34;</span><span class="nv">$url</span><span class="s2">&#34;/p&#34;</span> /tmp/hosts.tmp &gt;&gt; /etc/hosts
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span><span class="line"><span class="cl">//g<span class="err">&#39;</span> /etc/hosts
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Restart service&#34;</span>
+</span></span><span class="line"><span class="cl">systemctl restart NetworkManager
+</span></span></code></pre></td></tr></table></div></div><p>由于我自己设置了一些hosts，不想被覆盖，因此把这些hosts放在了/etc/hosts.bak。</p><p>这个脚本里比较特殊的一点是<code>^M</code>，这个其实是<code>\r</code>，脚本里的<code>^M</code>是通过<code>CTRL+V CTRL+M</code>来输入的。关于这个字符的移除参考：
+<a href="https://www.cyberciti.biz/faq/sed-remove-m-and-line-feeds-under-unix-linux-bsd-appleosx/">sed Delete / Remove ^M Carriage Return (Line Feed / CRLF) on Linux or Unix - nixCraft</a></p><hr><p>后记：学校ipv6不给力了，上不了Youtube了，呜呜呜。。。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/linux/">Linux</a></div><nav class="post-nav"><a class="prev" href="/p/7q1p8/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Linux下实用图片批处理脚本</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7q0if/"><span class="next-text nav-default">《SQL入门经典》学习笔记</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

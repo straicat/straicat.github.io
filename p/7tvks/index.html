@@ -1,0 +1,73 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>使用对拍器调试代码 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="前言 做久了LeetCode，感觉快被LeetCode给惯坏了。LeetCode体验很好，不用处理输入输出，可以在线调试代码，出错时给出用例数"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7tvks/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="使用对拍器调试代码"><meta property="og:description" content="前言 做久了LeetCode，感觉快被LeetCode给惯坏了。LeetCode体验很好，不用处理输入输出，可以在线调试代码，出错时给出用例数"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7tvks/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-04-08T19:40:00+08:00"><meta property="article:modified_time" content="2019-04-08T19:40:00+08:00"><meta itemprop="name" content="使用对拍器调试代码"><meta itemprop="description" content="前言 做久了LeetCode，感觉快被LeetCode给惯坏了。LeetCode体验很好，不用处理输入输出，可以在线调试代码，出错时给出用例数"><meta itemprop="datePublished" content="2019-04-08T19:40:00+08:00"><meta itemprop="dateModified" content="2019-04-08T19:40:00+08:00"><meta itemprop="wordCount" content="1164"><meta itemprop="keywords" content="刷题,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用对拍器调试代码"><meta name="twitter:description" content="前言 做久了LeetCode，感觉快被LeetCode给惯坏了。LeetCode体验很好，不用处理输入输出，可以在线调试代码，出错时给出用例数"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">使用对拍器调试代码</h1><div class="post-meta"><span class="post-time">2019-04-08</span>
+<span class="more-meta">约 1164 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#前言">前言</a></li><li><a href="#代码">代码</a></li><li><a href="#实战">实战</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="前言">前言</h2><p>做久了LeetCode，感觉快被LeetCode给惯坏了。LeetCode体验很好，不用处理输入输出，可以在线调试代码，出错时给出用例数据和正确结果。但是，很多OJ（比如HDOJ、ZOJ等）就只有极其有限的反馈。当好不容易写完代码，结果提交上去Wrong Answer，努力找代码中的错误也找不出来，这时该怎么办？</p><p>如果能找到AC的代码，那么，可以写一个测试用例数据生成器，然后将自己写的代码的运行结果与AC的代码的运行结果进行对比，这个过程叫“对拍”。对拍是在做OJ时很常用的手段，不过，往往需要进行多次的对拍，如果每次都手动执行对拍，无疑是件很繁琐的事情。如果一件事做起来很繁琐，那么就很难坚持下去，也难以享受其中的乐趣。所以，可以编写对拍器来自动进行对拍。</p><p>为了避免不必要的手动操作，我们希望对拍器能不断生成用例数据，直到自己写的代码的运行结果与AC的代码的运行结果不一致，最后自动打开文本比对工具进行结果比对。</p><h2 id="代码">代码</h2><p>由于个人对Python较为熟悉，而且感觉用Python写这样的小脚本比较方便，所以就用Python写的对拍器作为例子。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">pass</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">gen</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cmd1</span> <span class="o">=</span> <span class="s1">&#39;wa.exe &lt; in.txt&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cmd2</span> <span class="o">=</span> <span class="s1">&#39;ac.exe &lt; in.txt&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ret1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd1</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ret2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd2</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">ret1</span> <span class="o">!=</span> <span class="n">ret2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;1.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ret1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;2.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ret2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">&#39;meld 1.txt 2.txt&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table></div></div><p>首先，需要一个生成用例数据的函数gen，它可以往in.txt写入随机生成的用例数据。cmd1和cmd2分别是运行自己的程序和AC的程序的命令，并把in.txt作为标准输入。接着会检查两个命令的运行结果，如果不一致就将运行结果写入文件，并打开文本比对工具进行比对。文本比对工具有很多，不过，个人觉得meld就还不错，免费，跨平台。这里需要将meld加入环境变量Path，或者写meld的全路径。</p><h2 id="实战">实战</h2><p>今天在做ZOJ-2642时，题目并不难，感觉代码写得没问题，提交上去却Wrong Answer了。刚开始还以为ZOJ不支持STL，遂改成了不用STL实现，结果依然Wrong Answer。于是，使用对拍器进行对拍，发现进行了很多次对拍都没有出现和AC的代码的输出结果不一致的，这让我觉得有点沮丧。</p><p>最后，仔细阅读了题目，发现用例其实应该是由多组用例组成，但题目的示例里只给出了一组，这让习惯使用LeetCode的我有点不适应。意识到这个问题之后，遂果断加了层循环改成多组用例输入，结果对拍一次就出现了结果不一致。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7tvks/1554723627.png" alt></p><p>仔细观察发现，只有第一个用例的结果是一致的，后面的用例的结果是不一致的。通过检查代码发现是滥用全局变量导致的，每次处理前，一些全局变量没有还原，导致使用的是上次的结果，所以就出现了只有第一个用例的结果是一致的情况。</p><p>另外，在没有AC的代码的时候，也可以写个暴力的解法来做对拍，从而发现代码里的错误，这在笔试时是一个不错的技巧。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E5%88%B7%E9%A2%98/">刷题</a></div><nav class="post-nav"><a class="prev" href="/p/7uyk9/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">牛客网中级项目第二次课</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7ttkr/"><span class="next-text nav-default">解决leetcode-publisher的代码中文乱码BUG</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,338 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>【实验楼】Kafka快速上手教程 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="kafka 介绍与实践 基本概念 topic: Kafka处理的消息源 partition: topic物理上的分组，partition中每条消息都会被分配一个有序的id(offset) message:"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7z57j/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="【实验楼】Kafka快速上手教程"><meta property="og:description" content="kafka 介绍与实践 基本概念 topic: Kafka处理的消息源 partition: topic物理上的分组，partition中每条消息都会被分配一个有序的id(offset) message:"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7z57j/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-09-26T11:43:00+08:00"><meta property="article:modified_time" content="2019-09-26T11:43:00+08:00"><meta itemprop="name" content="【实验楼】Kafka快速上手教程"><meta itemprop="description" content="kafka 介绍与实践 基本概念 topic: Kafka处理的消息源 partition: topic物理上的分组，partition中每条消息都会被分配一个有序的id(offset) message:"><meta itemprop="datePublished" content="2019-09-26T11:43:00+08:00"><meta itemprop="dateModified" content="2019-09-26T11:43:00+08:00"><meta itemprop="wordCount" content="1411"><meta itemprop="keywords" content="实验楼,Kafka,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="【实验楼】Kafka快速上手教程"><meta name="twitter:description" content="kafka 介绍与实践 基本概念 topic: Kafka处理的消息源 partition: topic物理上的分组，partition中每条消息都会被分配一个有序的id(offset) message:"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">【实验楼】Kafka快速上手教程</h1><div class="post-meta"><span class="post-time">2019-09-26</span>
+<span class="more-meta">约 1411 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#kafka-介绍与实践">kafka 介绍与实践</a><ul><li><a href="#基本概念">基本概念</a></li><li><a href="#安装部署">安装部署</a></li></ul></li><li><a href="#使用-java-操作-kafka">使用 Java 操作 Kafka</a></li><li><a href="#kafka-集成-flume">Kafka 集成 Flume</a><ul><li><a href="#kafka-source">Kafka Source</a></li><li><a href="#kafka-sink">Kafka Sink</a></li><li><a href="#kafka-channel">Kafka Channel</a></li><li><a href="#区别和联系">区别和联系</a></li></ul></li><li><a href="#参考文献">参考文献</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="kafka-介绍与实践">kafka 介绍与实践</h2><h3 id="基本概念">基本概念</h3><p><code>topic</code>: Kafka处理的消息源</p><p><code>partition</code>: topic物理上的分组，partition中每条消息都会被分配一个有序的id(offset)</p><p><code>message</code>: 消息，通信的基本单位，每个producer可以向一个topic发布一些消息</p><p><code>broker</code>:缓存代理，Kafka集群中的一台或多台服务器统称为broker</p><p><code>leader</code>: 负责处理消息的读和写</p><p><code>replicas</code>: 副本节点</p><p><code>isr</code>: 正在服务中的节点</p><h3 id="安装部署">安装部署</h3><p>启动hadoop:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ hadoop/sbin/start-all.sh
+</span></span></code></pre></td></tr></table></div></div><p>启动zookeeper:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/zookeeper-server-start.sh config/zookeeper.properties <span class="p">&amp;</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动Kafka:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/kafka-server-start.sh config/server.properties <span class="p">&amp;</span>&gt; /dev/null <span class="p">&amp;</span>
+</span></span></code></pre></td></tr></table></div></div><p>创建topic:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic <span class="nb">test</span>
+</span></span></code></pre></td></tr></table></div></div><p>列举topic:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/kafka-topics.sh --list --zookeeper localhost:2181
+</span></span></code></pre></td></tr></table></div></div><p>查看topic信息：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bun/kafka-topics.sh --describe --zookeeper localhost:2181 --topic <span class="nb">test</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动producer与consumer:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ /opt/kafka_2.10-0.8.1.1$  bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">$ /opt/kafka_2.10-0.8.1.1$  bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic <span class="nb">test</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id="多broker配置">多broker配置</h4><p>准备多broker配置文件：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cp config/server.properties  config/server-1.properties
+</span></span><span class="line"><span class="cl">$ cp config/server.properties  config/server-2.properties
+</span></span></code></pre></td></tr></table></div></div><p>指定不同的<code>broker.id</code>、<code>port</code>和<code>log.dir</code></p><p><img src="https://dn-simplecloud.shiyanlou.com/courses/uid191123-20190826-1566809049764" alt="图片描述"></p><h2 id="使用-java-操作-kafka">使用 Java 操作 Kafka</h2><p>将kafka的libs下的jar包加入build path</p><p>Producer代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">syl.kafka</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.javaapi.producer.Producer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.producer.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProducerDemo</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Properties</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;zk.connect&#34;</span><span class="o">,</span> <span class="s">&#34;localhost:2181&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;metadata.broker.list&#34;</span><span class="o">,</span> <span class="s">&#34;localhost:9092&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;serializer.class&#34;</span><span class="o">,</span> <span class="s">&#34;kafka.serializer.StringEncoder&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">ProducerConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProducerConfig</span><span class="o">(</span><span class="n">props</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Producer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">producer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Producer</span><span class="o">&lt;&gt;(</span><span class="n">config</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">100000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="k">new</span> <span class="n">KeyedMessage</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> 
+</span></span><span class="line"><span class="cl">                <span class="s">&#34;message:&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Consumer代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">syl.kafka</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.consumer.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.javaapi.consumer.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.javaapi.consumer.ConsumerConnector</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">kafka.message.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConsumerDemo</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">topic</span> <span class="o">=</span> <span class="s">&#34;test&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Integer</span> <span class="n">threds</span> <span class="o">=</span> <span class="n">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Properties</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;zookeeper.connect&#34;</span><span class="o">,</span> <span class="s">&#34;localhost:2181&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;group.id&#34;</span><span class="o">,</span> <span class="s">&#34;group1&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;auto.offset.reset&#34;</span><span class="o">,</span> <span class="s">&#34;smallest&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">ConsumerConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConsumerConfig</span><span class="o">(</span><span class="n">props</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ConsumerConnector</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">Consumer</span><span class="o">.</span><span class="na">createJavaConsumerConnector</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">topicCountMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">topicCountMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">topic</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">KafkaStream</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[],</span> <span class="kt">byte</span><span class="o">[]&gt;&gt;&gt;</span> <span class="n">consumerMap</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">createMessageStreams</span><span class="o">(</span><span class="n">topicCountMap</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">KafkaStream</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[],</span> <span class="kt">byte</span><span class="o">[]&gt;&gt;</span> <span class="n">streams</span> <span class="o">=</span> <span class="n">consumerMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">topic</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">KafkaStream</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[],</span> <span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">kafkaStream</span> <span class="o">:</span> <span class="n">streams</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">for</span> <span class="o">(</span><span class="n">MessageAndMetadata</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[],</span> <span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">mm</span> <span class="o">:</span> <span class="n">kafkaStream</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">String</span> <span class="n">msg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">mm</span><span class="o">.</span><span class="na">message</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src="https://dn-simplecloud.shiyanlou.com/courses/uid191123-20190826-1566812932236" alt="图片描述"></p><h2 id="kafka-集成-flume">Kafka 集成 Flume</h2><p>如果启动zookeeper后运行jps没有QuorumPeerMain，查看zookeeper目录下的<code>zookeeper.out</code>可以找到问题原因。</p><h3 id="kafka-source">Kafka Source</h3><p>在flume的conf目录下新建一个配置：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo vi kafkaSource.properties
+</span></span></code></pre></td></tr></table></div></div><p>内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># Name the components on this agent
+</span></span><span class="line"><span class="cl">a1.sources=r1
+</span></span><span class="line"><span class="cl">a1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks=k1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe/configure the source
+</span></span><span class="line"><span class="cl">a1.sources.r1.type=org.apache.flume.source.kafka.KafkaSource
+</span></span><span class="line"><span class="cl">a1.sources.r1.zookeeperConnect=localhost:2181
+</span></span><span class="line"><span class="cl">a1.sources.r1.topic=testkafkasource
+</span></span><span class="line"><span class="cl">a1.sources.r1.groupId=flume
+</span></span><span class="line"><span class="cl">a1.sources.r1.kafka.consumer.timeout.ms=100
+</span></span><span class="line"><span class="cl">a1.sources.source1.interceptors.i1.type = timestamp
+</span></span><span class="line"><span class="cl"># Use a channel which buffers events in memory
+</span></span><span class="line"><span class="cl">a1.channels.c1.type=memory
+</span></span><span class="line"><span class="cl">a1.channels.c1.capacity = 10000
+</span></span><span class="line"><span class="cl">a1.channels.c1.transactionCapacity = 1000
+</span></span><span class="line"><span class="cl"># Describe the sink 
+</span></span><span class="line"><span class="cl">a1.sinks.k1.type=hdfs
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.path=hdfs://localhost:9000/flume-kafa/%{topic}/%y-%m-%d
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.fileType=DataStream
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Bind the source and sink to the channel 
+</span></span><span class="line"><span class="cl">a1.sources.r1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks.k1.channel=c1
+</span></span></code></pre></td></tr></table></div></div><p>然后创建topic，使用producer向topic中写入消息，然后flume-ng启动agent:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/flume-ng agent --conf conf --conf-file conf/kafkaSource.properties --name a1 -Dflume.root.logger<span class="o">=</span>INFO,console
+</span></span></code></pre></td></tr></table></div></div><p>写入消息后，在hdfs上有相应的文件创建。</p><h3 id="kafka-sink">Kafka Sink</h3><p>在flume的conf目录下新建一个配置：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo vi kafkaSink.properties
+</span></span></code></pre></td></tr></table></div></div><p>内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># Name the components on this agent 
+</span></span><span class="line"><span class="cl">a1.sources=r1
+</span></span><span class="line"><span class="cl">a1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks=k1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe/configure the source 
+</span></span><span class="line"><span class="cl">a1.sources.r1.type=netcat
+</span></span><span class="line"><span class="cl">a1.sources.r1.bind=localhost
+</span></span><span class="line"><span class="cl">a1.sources.r1.port=8888
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Use a channel which buffers events in memory
+</span></span><span class="line"><span class="cl">a1.channels.c1.type=memory
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe the sink 
+</span></span><span class="line"><span class="cl">a1.sinks.k1.type=org.apache.flume.sink.kafka.KafkaSink
+</span></span><span class="line"><span class="cl">a1.sinks.k1.topic=testkafkasink
+</span></span><span class="line"><span class="cl">a1.sinks.k1.brokerList=localhost:9092
+</span></span><span class="line"><span class="cl">a1.sinks.k1.requiredAcks=1
+</span></span><span class="line"><span class="cl">a1.sinks.k1.batchSize=20
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Bind the source and sink to the channel 
+</span></span><span class="line"><span class="cl">a1.sources.r1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks.k1.channel=c1
+</span></span></code></pre></td></tr></table></div></div><p>然后创建topic，然后flume-ng启动agent:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/flume-ng agent --conf conf --conf-file conf/kafkaSink.properties --name a1 -Dflume.root.logger<span class="o">=</span>INFO,console
+</span></span></code></pre></td></tr></table></div></div><p>使用nc发送一些数据试验：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ nc localhost <span class="m">8888</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后启动consumer，将会消费消息。</p><h3 id="kafka-channel">Kafka Channel</h3><p>在flume的conf目录下新建一个配置：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo vi kafkaChannel.properties
+</span></span></code></pre></td></tr></table></div></div><p>内容如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># Name the components on this agent 
+</span></span><span class="line"><span class="cl">a1.sources=r1
+</span></span><span class="line"><span class="cl">a1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks=k1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe/configure the source 
+</span></span><span class="line"><span class="cl">a1.sources.r1.type=netcat
+</span></span><span class="line"><span class="cl">a1.sources.r1.bind=localhost
+</span></span><span class="line"><span class="cl">a1.sources.r1.port=8888
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe the channel 
+</span></span><span class="line"><span class="cl">a1.channels.c1.type=org.apache.flume.channel.kafka.KafkaChannel
+</span></span><span class="line"><span class="cl">a1.channels.c1.capacity=1000
+</span></span><span class="line"><span class="cl">a1.channels.c1.transactionCapacity=1000
+</span></span><span class="line"><span class="cl">a1.channels.c1.brokerList=localhost:9092
+</span></span><span class="line"><span class="cl">a1.channels.c1.topic=testkafkachannel
+</span></span><span class="line"><span class="cl">a1.channels.c1.zookeeperConnect=localhost:2181
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Describe the sink 
+</span></span><span class="line"><span class="cl">a1.sinks.k1.type=hdfs
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.path=hdfs://localhost:9000/kafka-channel/logs/
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.filePrefix=log
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.rollInterval=0
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.rollCount=10000
+</span></span><span class="line"><span class="cl">a1.sinks.k1.hdfs.fileType=DataStream
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Bind the source and sink to the channel 
+</span></span><span class="line"><span class="cl">a1.sources.r1.channels=c1
+</span></span><span class="line"><span class="cl">a1.sinks.k1.channel=c1
+</span></span></code></pre></td></tr></table></div></div><p>然后创建topic，flume-ng启动agent:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ bin/flume-ng agent --conf conf --conf-file conf/kafkaChannel.properties --name a1 -Dflume.root.logger<span class="o">=</span>INFO,console
+</span></span></code></pre></td></tr></table></div></div><p>使用nc发送一些试验数据，再启动consumer即可消费消息，也能看到hadoop上的内容：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ hadoop fs -lsr hdfs://localhost:9000/kafka-channel/
+</span></span></code></pre></td></tr></table></div></div><h3 id="区别和联系">区别和联系</h3><p>Flume是一个专用工具被设计为旨在往HDFS、HBase发送数据，它对HDFS有特殊的优化。</p><p>Flume和Kafka可以结合起来使用</p><p><img src="https://dn-simplecloud.shiyanlou.com/courses/uid191123-20190827-1566840772165" alt="图片描述"></p><h2 id="参考文献">参考文献</h2><p><a href="https://www.shiyanlou.com/courses/785">Kafka快速上手教程_Hadoop - 实验楼</a></p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E5%AE%9E%E9%AA%8C%E6%A5%BC/">实验楼</a>
+<a href="/tags/kafka/">Kafka</a></div><nav class="post-nav"><a class="prev" href="/p/7z5ke/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">HashMap源码分析</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7z56m/"><span class="next-text nav-default">静态博客搭建方法小结</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

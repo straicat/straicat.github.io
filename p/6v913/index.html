@@ -1,0 +1,92 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>Ubuntu搭建Ruby on Rails环境 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="安装Ruby 由于Ubuntu的apt包管理器的ruby版本过旧，故考虑从源码编译安装。这里以安装ruby2.3.0为例： 1 2 3 4 5 6 7 8 sudo apt-get"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/6v913/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="Ubuntu搭建Ruby on Rails环境"><meta property="og:description" content="安装Ruby 由于Ubuntu的apt包管理器的ruby版本过旧，故考虑从源码编译安装。这里以安装ruby2.3.0为例： 1 2 3 4 5 6 7 8 sudo apt-get"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/6v913/"><meta property="article:section" content="post"><meta property="article:published_time" content="2016-03-12T22:15:00+08:00"><meta property="article:modified_time" content="2016-03-12T22:15:00+08:00"><meta itemprop="name" content="Ubuntu搭建Ruby on Rails环境"><meta itemprop="description" content="安装Ruby 由于Ubuntu的apt包管理器的ruby版本过旧，故考虑从源码编译安装。这里以安装ruby2.3.0为例： 1 2 3 4 5 6 7 8 sudo apt-get"><meta itemprop="datePublished" content="2016-03-12T22:15:00+08:00"><meta itemprop="dateModified" content="2016-03-12T22:15:00+08:00"><meta itemprop="wordCount" content="375"><meta itemprop="keywords" content="Linux,Ruby,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Ubuntu搭建Ruby on Rails环境"><meta name="twitter:description" content="安装Ruby 由于Ubuntu的apt包管理器的ruby版本过旧，故考虑从源码编译安装。这里以安装ruby2.3.0为例： 1 2 3 4 5 6 7 8 sudo apt-get"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">Ubuntu搭建Ruby on Rails环境</h1><div class="post-meta"><span class="post-time">2016-03-12</span>
+<span class="more-meta">约 375 字</span>
+<span class="more-meta">预计阅读 1 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#安装ruby">安装Ruby</a></li><li><a href="#安装sqlite3">安装sqlite3</a></li><li><a href="#安装rails">安装Rails</a></li><li><a href="#修改gemfile">修改Gemfile</a></li><li><a href="#安装javascript-运行时">安装JavaScript 运行时</a></li><li><a href="#建立rails工程">建立Rails工程</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="安装ruby">安装Ruby</h2><p>由于Ubuntu的apt包管理器的ruby版本过旧，故考虑从源码编译安装。这里以安装ruby2.3.0为例：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt-get install build-essential zlib1g-dev libssl-dev libreadline6-dev libyaml-dev
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /tmp
+</span></span><span class="line"><span class="cl">wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz
+</span></span><span class="line"><span class="cl">tar -xvzf ruby-2.3.0.tar.gz
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> ruby-2.3.0/
+</span></span><span class="line"><span class="cl">./configure
+</span></span><span class="line"><span class="cl">make
+</span></span><span class="line"><span class="cl">sudo make install
+</span></span></code></pre></td></tr></table></div></div><p>安装完成后，我们可以查看其版本：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ruby -v
+</span></span><span class="line"><span class="cl">ruby 2.3.0p0 <span class="o">(</span>2015-12-25 revision 53290<span class="o">)</span> <span class="o">[</span>i686-linux<span class="o">]</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="安装sqlite3">安装sqlite3</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt-get install sqlite3 libsqlite3-dev
+</span></span></code></pre></td></tr></table></div></div><h2 id="安装rails">安装Rails</h2><p>由于GFW的缘故，ruby默认的gem源rubygems.org无法访问，故需要先换源。</p><p>查看当前的gem源：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ gem sources -l
+</span></span><span class="line"><span class="cl">*** CURRENT SOURCES ***
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">https://rubygems.org/
+</span></span></code></pre></td></tr></table></div></div><p>换源：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ gem sources -r https://rubygems.org/
+</span></span><span class="line"><span class="cl">https://rubygems.org/ removed from sources
+</span></span><span class="line"><span class="cl">$ gem sources -a https://ruby.taobao.org/
+</span></span><span class="line"><span class="cl">https://ruby.taobao.org/ added to sources
+</span></span><span class="line"><span class="cl">$ gem sources -l
+</span></span><span class="line"><span class="cl">*** CURRENT SOURCES ***
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">https://ruby.taobao.org/
+</span></span></code></pre></td></tr></table></div></div><p>安装Rails：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo gem install rails
+</span></span></code></pre></td></tr></table></div></div><p>安装完成后查看其版本：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ rails --version
+</span></span><span class="line"><span class="cl">Rails 4.2.5.2
+</span></span></code></pre></td></tr></table></div></div><h2 id="修改gemfile">修改Gemfile</h2><p>编辑Gemfile：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo vi /usr/local/lib/ruby/gems/2.3.0/gems/railties-4.2.5.2/lib/rails/generators/rails/app/templates/Gemfile
+</span></span></code></pre></td></tr></table></div></div><p>将第一行</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>改为：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">source &#39;https://ruby.taobao.org/&#39;
+</span></span></code></pre></td></tr></table></div></div><h2 id="安装javascript-运行时">安装JavaScript 运行时</h2><p>这里选择安装NodeJS：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt-get install nodejs
+</span></span></code></pre></td></tr></table></div></div><h2 id="建立rails工程">建立Rails工程</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">rails new demo
+</span></span></code></pre></td></tr></table></div></div><p>进入文件夹，启动服务器：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> demo/
+</span></span><span class="line"><span class="cl">rails server
+</span></span></code></pre></td></tr></table></div></div><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/6v913/1457792100.png" alt></p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/linux/">Linux</a>
+<a href="/tags/ruby/">Ruby</a></div><nav class="post-nav"><a class="prev" href="/p/6vof6/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Python项目：扇贝网小组查卡助手</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/6sjd1/"><span class="next-text nav-default">Python爬虫入门案例：获取百词斩已学单词列表</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,123 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>MNIST数据集解析 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="从MNIST数据集官网可以下载MNIST数据集。 MNIST数据集以.gz格式压缩，Python可以直接读取而不需要解压缩： 1 2 3 4 import gzip with gzip.open(&amp;#39;t10k-images-idx3-ubyte.gz&amp;#39;) as"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7hnmu/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="MNIST数据集解析"><meta property="og:description" content="从MNIST数据集官网可以下载MNIST数据集。 MNIST数据集以.gz格式压缩，Python可以直接读取而不需要解压缩： 1 2 3 4 import gzip with gzip.open('t10k-images-idx3-ubyte.gz') as"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7hnmu/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-03-08T20:54:00+08:00"><meta property="article:modified_time" content="2018-03-08T20:54:00+08:00"><meta itemprop="name" content="MNIST数据集解析"><meta itemprop="description" content="从MNIST数据集官网可以下载MNIST数据集。 MNIST数据集以.gz格式压缩，Python可以直接读取而不需要解压缩： 1 2 3 4 import gzip with gzip.open('t10k-images-idx3-ubyte.gz') as"><meta itemprop="datePublished" content="2018-03-08T20:54:00+08:00"><meta itemprop="dateModified" content="2018-03-08T20:54:00+08:00"><meta itemprop="wordCount" content="1048"><meta itemprop="keywords" content="AI,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="MNIST数据集解析"><meta name="twitter:description" content="从MNIST数据集官网可以下载MNIST数据集。 MNIST数据集以.gz格式压缩，Python可以直接读取而不需要解压缩： 1 2 3 4 import gzip with gzip.open('t10k-images-idx3-ubyte.gz') as"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">MNIST数据集解析</h1><div class="post-meta"><span class="post-time">2018-03-08</span>
+<span class="more-meta">约 1048 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"></nav></div></div><div class="post-content"><p>从<a href="http://yann.lecun.com/exdb/mnist/">MNIST数据集官网</a>可以下载MNIST数据集。</p><p>MNIST数据集以.gz格式压缩，Python可以直接读取而不需要解压缩：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">gzip</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;t10k-images-idx3-ubyte.gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table></div></div><p>MNIST数据集使用二进制文件，而不是常规的图片文件格式。以t10k-images-idx3-ubyte为例，在官网有其结构说明：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[offset] [type]          [value]          [description]
+</span></span><span class="line"><span class="cl">0000     32 bit integer  0x00000803(2051) magic number
+</span></span><span class="line"><span class="cl">0004     32 bit integer  10000            number of images
+</span></span><span class="line"><span class="cl">0008     32 bit integer  28               number of rows
+</span></span><span class="line"><span class="cl">0012     32 bit integer  28               number of columns
+</span></span><span class="line"><span class="cl">0016     unsigned byte   ??               pixel
+</span></span><span class="line"><span class="cl">0017     unsigned byte   ??               pixel
+</span></span><span class="line"><span class="cl">........
+</span></span><span class="line"><span class="cl">xxxx     unsigned byte   ??               pixel
+</span></span></code></pre></td></tr></table></div></div><p>先解压并查看t10k-images-idx3-ubyte的内容：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl">$ gzip -d -k t10k-images-idx3-ubyte.gz
+</span></span><span class="line"><span class="cl">$ xxd t10k-images-idx3-ubyte <span class="p">|</span> head
+</span></span><span class="line"><span class="cl">00000000: <span class="m">0000</span> <span class="m">0803</span> <span class="m">0000</span> <span class="m">2710</span> <span class="m">0000</span> 001c <span class="m">0000</span> 001c  ......<span class="err">&#39;</span>.........
+</span></span><span class="line"><span class="cl">00000010: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000020: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000030: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000040: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000050: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000060: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000070: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000080: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span><span class="line"><span class="cl">00000090: <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+</span></span></code></pre></td></tr></table></div></div><p>最开始4个字节是魔数，16进制为0x00000803，从结果可以看出确实如此。随后的4个字节为图片的数量，值为10000，16进制为0x2710。可以通过Linux自带的计算器bc来计算，ibase和obase分别为输入和输出的进制：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl">$ bc -q
+</span></span><span class="line"><span class="cl"><span class="nv">ibase</span><span class="o">=</span><span class="m">10</span>
+</span></span><span class="line"><span class="cl"><span class="nv">obase</span><span class="o">=</span><span class="m">16</span>
+</span></span><span class="line"><span class="cl"><span class="m">10000</span>
+</span></span><span class="line"><span class="cl"><span class="m">2710</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么，在Python中要怎么解析二进制数据呢？可以使用struct模块来读取二进制文件：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">struct</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">magic</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;&gt;iiii&#39;</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">magic</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Output：</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2051</span> <span class="mi">10000</span> <span class="mi">28</span> <span class="mi">28</span>
+</span></span></code></pre></td></tr></table></div></div><p>在MNIST官网对数据集的格式有这样的一句说明：“All the integers in the files are stored in the MSB first (high endian) format used by most non-Intel processors. Users of Intel processors and other low-endian machines must flip the bytes of the header.”。意思是，所有的整数使用MSB方式（也就是大端模式）。大小端模式是数据在地址上的存放方式。大端模式高字节保存在低地址中，小端模式反之。</p><p><code>>iiii</code>的意思就是：大端模式，读取四个int（C语言）。参见<a href="https://docs.python.org/3/library/struct.html">Python struct模块官方文档</a></p><p>来读取第一张图片试试：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">idx</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;&gt;iiii&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">img</span><span class="o">.</span><span class="n">putpixel</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">idx</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">idx</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table></div></div><p>在MNIST官网对于像素的格式有这样的说明：“Pixels are organized row-wise. Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black). ”。</p><p><code>Image.new()</code>第一个参数是模式，由于MNIST数据集是灰度图像，所以是<code>L</code>，第二个参数是尺寸<code>(宽, 高)</code>。由于像素是按行排列，也就是第一个像素坐标是(0, 0)，第二个像素坐标是(1, 0)，第三个像素坐标是(2, 0)，以此类推。坐标(x, y)以左上角为原点。</p><p>如果使用Jupyter notebook，可以使用内联matplotlib来显示图片：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7hnmu/1520513698.png" alt></p><p>至于其余的文件解析，在此就不赘述了。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/ai/">AI</a></div><nav class="post-nav"><a class="prev" href="/p/7hpz5/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">awk命令学习笔记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7hmgi/"><span class="next-text nav-default">使用TensorFlow进行线性回归</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

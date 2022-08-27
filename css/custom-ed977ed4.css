@@ -1,0 +1,13 @@
+.power-by, .division, .theme-info { display: none; }
+body, body > .container
+{ background-color: #F5F5D5; }
+.post .post-content .table-wrapper>table th, .post .post-content .table-wrapper>table td
+{ border-color: #d7d7b9; }
+.post .post-header .post-title,
+.post .post-content h1,
+.post .post-content h2,
+.post .post-content h3,
+.post .post-content h4,
+.post .post-content h5,
+.post .post-content h6
+{ font-family: 'Source Han Serif CN SemiBold', STZhongsong, serif; }

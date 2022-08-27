@@ -1,0 +1,86 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>向量微积分基础 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="机器学习里经常需要用到向量微积分。向量微积分其实并不难，但大学数学一般不提，导致在看机器学习的一些推导时常常感觉疑惑。 机器学习里经常用到标量"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7kemt/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="向量微积分基础"><meta property="og:description" content="机器学习里经常需要用到向量微积分。向量微积分其实并不难，但大学数学一般不提，导致在看机器学习的一些推导时常常感觉疑惑。 机器学习里经常用到标量"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7kemt/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-06-05T23:17:00+08:00"><meta property="article:modified_time" content="2018-06-05T23:17:00+08:00"><meta itemprop="name" content="向量微积分基础"><meta itemprop="description" content="机器学习里经常需要用到向量微积分。向量微积分其实并不难，但大学数学一般不提，导致在看机器学习的一些推导时常常感觉疑惑。 机器学习里经常用到标量"><meta itemprop="datePublished" content="2018-06-05T23:17:00+08:00"><meta itemprop="dateModified" content="2018-06-05T23:17:00+08:00"><meta itemprop="wordCount" content="845"><meta itemprop="keywords" content="AI,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="向量微积分基础"><meta name="twitter:description" content="机器学习里经常需要用到向量微积分。向量微积分其实并不难，但大学数学一般不提，导致在看机器学习的一些推导时常常感觉疑惑。 机器学习里经常用到标量"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">向量微积分基础</h1><div class="post-meta"><span class="post-time">2018-06-05</span>
+<span class="more-meta">约 845 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"></nav></div></div><div class="post-content"><p>机器学习里经常需要用到向量微积分。向量微积分其实并不难，但大学数学一般不提，导致在看机器学习的一些推导时常常感觉疑惑。</p><p>机器学习里经常用到标量和向量、向量和向量的求导，其实只是把向量对应位置的元素进行求导。但是，这些元素的组织方式有两种，分别是分子布局和分母布局，二者并无本质上的差别，只是结果相差个转置。这两种布局都存在，初学者常常混淆。</p><p>例如求$ \frac {\partial \mathbf{y}} {\partial x} $，其中$ \mathbf{y} $是$n$维列向量，$x$是标量。这个求导就是把$\mathbf{y}$里每个元素分别对$x$求导，但求导后是得到列向量还是行向量呢？</p><p>对于分子布局：</p><div>$$
+\frac {\partial \mathbf{y}} {\partial x} =
+\begin{bmatrix}
+\frac {\partial y_1} {\partial x} \\
+\frac {\partial y_2} {\partial x} \\
+\vdots \\
+\frac {\partial y_n} {\partial x} \\
+\end{bmatrix}
+$$</div><p>对于分母布局：</p><div>$$
+\frac {\partial \mathbf{y}} {\partial x} =
+\begin{bmatrix}
+\frac {\partial y_1} {\partial x} & \frac {\partial y_2} {\partial x} & \dots & \frac {\partial y_n} {\partial x} \\
+\end{bmatrix}
+$$</div><p>两种布局容易混淆，建议选择自己习惯的布局即可。这里我们选择分子布局进行后面的说明。</p><p>符号约定：小写粗体：值为向量；大写粗体：值为矩阵；小写斜体：值为标量。以a、b、c、d表示和x无关的函数，u=u(x)，v=v(x)，f、g、h是函数。</p><div>$$
+\frac{\partial y}{\partial \mathbf{x}} =
+\begin{bmatrix}
+\frac{\partial y}{\partial x_1} &
+\frac{\partial y}{\partial x_2} &
+\dots &
+\frac{\partial y}{\partial x_n} \\
+\end{bmatrix}
+$$</div><div>$$
+\frac{\partial \mathbf{y}}{\partial \mathbf{x}} =
+\begin{bmatrix}
+\frac{\partial y_1}{\partial x_1} & \frac{\partial y_1}{\partial x_2} & \cdots & \frac{\partial y_1}{\partial x_n}\\
+\frac{\partial y_2}{\partial x_1} & \frac{\partial y_2}{\partial x_2} & \cdots & \frac{\partial y_2}{\partial x_n}\\
+\vdots & \vdots & \ddots & \vdots\\
+\frac{\partial y_m}{\partial x_1} & \frac{\partial y_m}{\partial x_2} & \cdots & \frac{\partial y_m}{\partial x_n}\\
+\end{bmatrix}
+$$</div><p>这个矩阵又叫<strong>雅可比（Jacobi）矩阵</strong>。</p><div>$$
+\frac{\partial y}{\partial \mathbf{X}} =
+\begin{bmatrix}
+\frac{\partial y}{\partial x_{11}} & \frac{\partial y}{\partial x_{21}} & \cdots & \frac{\partial y}{\partial x_{p1}}\\
+\frac{\partial y}{\partial x_{12}} & \frac{\partial y}{\partial x_{22}} & \cdots & \frac{\partial y}{\partial x_{p2}}\\
+\vdots & \vdots & \ddots & \vdots\\
+\frac{\partial y}{\partial x_{1q}} & \frac{\partial y}{\partial x_{2q}} & \cdots & \frac{\partial y}{\partial x_{pq}}\\
+\end{bmatrix}
+$$</div><p>虽然看着挺复杂，但不难看出：分子布局的特点是，分子的编号排列和分子相同，分母的编号排列和分母的转置相同。</p><p>一些求导公式比较常用，在此列举一下：</p><div>$$
+\frac {\partial {\mathbf{Ax}}} {\partial \mathbf{x}} = \mathbf{A}
+$$</div><div>$$
+\frac {\partial \mathbf{x}^\top \mathbf{X}} {\partial \mathbf{x}} = \mathbf{A}^\top
+$$</div><div>$$
+\frac {\partial \mathbf{x}^\top \mathbf{x}} {\partial \mathbf{x}} = 2 \mathbf{x}^\top
+$$</div><div>$$
+\frac {\partial \mathbf{x}^\top \mathbf{A} \mathbf{x}} {\partial \mathbf{x}} = \mathbf{x}^\top(\mathbf{A} + \mathbf{A}^\top)
+$$</div><p>若$\mathbf{A}$为对称阵，则对于上式：</p><div>$$
+\begin{split}
+\frac {\partial \mathbf{x}^\top \mathbf{A} \mathbf{x}} {\partial \mathbf{x}} &= \mathbf{x}^\top(\mathbf{A} + \mathbf{A}^\top) \\
+&= 2 \mathbf{x}^\top\mathbf{A}
+\end{split}
+$$</div><p>和、积的导数：</p><div>$$
+\frac {\partial (\mathbf{u} + \mathbf{v})} {\partial \mathbf{x}} =
+\frac {\partial \mathbf{u}} {\partial \mathbf{x}} +
+\frac {\partial \mathbf{v}} {\partial \mathbf{x}}
+$$</div><div>$$
+{\frac {\partial ({\mathbf {u}}\cdot {\mathbf {v}})}{\partial {\mathbf {x}}}}={\frac {\partial {\mathbf {u}}^{\top }{\mathbf {v}}}{\partial {\mathbf {x}}}}=
+{\mathbf {u}}^{\top }{\frac {\partial {\mathbf {v}}}{\partial {\mathbf {x}}}}+{\mathbf {v}}^{\top }{\frac {\partial {\mathbf {u}}}{\partial {\mathbf {x}}}}
+$$</div><p>链式求导：</p><div>$$
+\frac{\partial \mathbf{f(u)}}{\partial \mathbf{x}} =
+\frac{\partial \mathbf{f(u)}}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial \mathbf{x}}
+$$</div><p>更多详细内容可以参考：<a href="https://en.wikipedia.org/wiki/Matrix_calculus">Matrix calculus - Wikipedia</a></p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/ai/">AI</a></div><nav class="post-nav"><a class="prev" href="/p/7kmxm/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">利用油猴脚本显示扇贝网真实打卡日记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7ka8s/"><span class="next-text nav-default">线性最小二乘法推导</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script type="text/javascript">window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

@@ -1,0 +1,93 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>ClassNotFoundException与NoClassDefFoundError【译】 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="ClassNotFoundException 和 NoClassDefFoundError 都是某个类在运行时没有找到时出现的，但它们发生的场景不同。 ClassNotFoundException 是一个异常，当你在运行时使用 Class.forName() 或 loadClass() 方法尝试去加载一个类且这个类没有在 classpath 下找"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7zc5g/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="ClassNotFoundException与NoClassDefFoundError【译】"><meta property="og:description" content="ClassNotFoundException 和 NoClassDefFoundError 都是某个类在运行时没有找到时出现的，但它们发生的场景不同。 ClassNotFoundException 是一个异常，当你在运行时使用 Class.forName() 或 loadClass() 方法尝试去加载一个类且这个类没有在 classpath 下找"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7zc5g/"><meta property="article:section" content="post"><meta property="article:published_time" content="2019-10-02T17:40:00+08:00"><meta property="article:modified_time" content="2019-10-02T17:40:00+08:00"><meta itemprop="name" content="ClassNotFoundException与NoClassDefFoundError【译】"><meta itemprop="description" content="ClassNotFoundException 和 NoClassDefFoundError 都是某个类在运行时没有找到时出现的，但它们发生的场景不同。 ClassNotFoundException 是一个异常，当你在运行时使用 Class.forName() 或 loadClass() 方法尝试去加载一个类且这个类没有在 classpath 下找"><meta itemprop="datePublished" content="2019-10-02T17:40:00+08:00"><meta itemprop="dateModified" content="2019-10-02T17:40:00+08:00"><meta itemprop="wordCount" content="872"><meta itemprop="keywords" content="Java,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="ClassNotFoundException与NoClassDefFoundError【译】"><meta name="twitter:description" content="ClassNotFoundException 和 NoClassDefFoundError 都是某个类在运行时没有找到时出现的，但它们发生的场景不同。 ClassNotFoundException 是一个异常，当你在运行时使用 Class.forName() 或 loadClass() 方法尝试去加载一个类且这个类没有在 classpath 下找"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">ClassNotFoundException与NoClassDefFoundError【译】</h1><div class="post-meta"><span class="post-time">2019-10-02</span>
+<span class="more-meta">约 872 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#classnotfoundexception">ClassNotFoundException</a></li><li><a href="#noclassdeffounderror">NoClassDefFoundError</a></li><li><a href="#总结">总结</a></li><li><a href="#参考文献">参考文献</a></li></ul></li></ul></nav></div></div><div class="post-content"><p><code>ClassNotFoundException</code> 和 <code>NoClassDefFoundError</code> 都是某个类在运行时没有找到时出现的，但它们发生的场景不同。</p><p><code>ClassNotFoundException</code> 是一个异常，当你在运行时使用 <code>Class.forName()</code> 或 <code>loadClass()</code> 方法尝试去加载一个类且这个类没有在 classpath 下找到时会出现该异常。</p><p><code>NoClassDefFoundError</code> 是一个错误，当某个类在编译时存在但在运行时丢失时会出现该错误。</p><h2 id="classnotfoundexception">ClassNotFoundException</h2><p><code>ClassNotFoundException</code> 是一个运行时异常，当应用程序在运行时使用 <code>Class.forName()</code> 或 <code>loadClass()</code> 或 <code>findSystemClass()</code> 方法尝试去加载一个类，并且这个类在 classpath 下找不到时会抛出该异常。举个例子，当你尝试连接到 MySQL 或 Oracle 数据库，且你还没有将需要的 JAR 文件更新到 classpath 下时，你可能就碰到过这个异常。在大多数时候，这个异常发生在当你尝试去运行一个应用程序但还没有将需要的 JAR 文件更新到 classpath 时。</p><p>例如，如果提到的类 &ldquo;oracle.jdbc.driver.OracleDriver&rdquo; 没有在 classpath 下找到，下面这个程序会抛出 <code>ClassNotFoundException</code>：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;oracle.jdbc.driver.OracleDriver&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果你没有将需要的 JAR 文件更新到 classpath，运行上面的程序你会遇到如下异常：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver
+</span></span><span class="line"><span class="cl">	at java.net.URLClassLoader.findClass(URLClassLoader.java:382)
+</span></span><span class="line"><span class="cl">	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+</span></span><span class="line"><span class="cl">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
+</span></span><span class="line"><span class="cl">	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+</span></span><span class="line"><span class="cl">	at java.lang.Class.forName0(Native Method)
+</span></span><span class="line"><span class="cl">	at java.lang.Class.forName(Class.java:264)
+</span></span><span class="line"><span class="cl">	at MainClass.main(MainClass.java:4)
+</span></span></code></pre></td></tr></table></div></div><h2 id="noclassdeffounderror">NoClassDefFoundError</h2><p><code>NoClassDefFoundError</code> 是一个错误，当 Java 运行时系统尝试去加载某个类的定义，但这个类的定义不可用时，会抛出这个错误。需要的类定义在编译时是存在的，但在运行时丢失。例如，编译下面的程序：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// some code
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">B</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">A</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">A</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>当你编译完上面的程序，会生成两个 .class 的文件。其中一个是 A.class，另一个是 B.class。如果你移除 A.class 文件再运行 B.class，Java 运行时系统会抛出 <code>NoClassDefFoundError</code>，如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Exception in thread &#34;main&#34; java.lang.NoClassDefFoundError: A
+</span></span><span class="line"><span class="cl">	at B.main(B.java:7)
+</span></span><span class="line"><span class="cl">Caused by: java.lang.ClassNotFoundException: A
+</span></span><span class="line"><span class="cl">	at java.net.URLClassLoader.findClass(URLClassLoader.java:382)
+</span></span><span class="line"><span class="cl">	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+</span></span><span class="line"><span class="cl">	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
+</span></span><span class="line"><span class="cl">	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+</span></span><span class="line"><span class="cl">	... 1 more
+</span></span></code></pre></td></tr></table></div></div><h2 id="总结">总结</h2><table><thead><tr><th>ClassNotFoundException</th><th>NoClassDefFoundError</th></tr></thead><tbody><tr><td>它是个异常，是一种<code>java.lang.Exception</code></td><td>它是个错误，是一种<code>java.lang.Error</code></td></tr><tr><td>它发生在应用程序在运行时尝试加载一个没有更新到 classpath 中的类的时候。</td><td>它发生于 Java 运行时系统不能找到一个类的定义，类的定义在编译时存在却在运行时丢失。</td></tr><tr><td>它由应用程序自己抛出。通过类似于 <code>Class.forName()</code>, <code>loadClass()</code> 和 <code>findSystemClass()</code> 之类的方法抛出。</td><td>它由 Java 运行时系统抛出。</td></tr><tr><td>它发生于需要的 JAR 文件没有更新到 classpath。</td><td>它发生在运行时需要的类定义丢失时。</td></tr></tbody></table><h2 id="参考文献">参考文献</h2><p><a href="https://dzone.com/articles/java-classnotfoundexception-vs-noclassdeffounderro">ClassNotFoundException vs. NoClassDefFoundError - DZone Java</a></p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/java/">Java</a></div><nav class="post-nav"><a class="prev" href="/p/80p1z/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">猿辅导2020届秋招面经</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7z5ti/"><span class="next-text nav-default">深入理解Java序列化</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

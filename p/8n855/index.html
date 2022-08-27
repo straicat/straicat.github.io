@@ -1,0 +1,443 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>《TCP IP网络编程》学习笔记一 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="前言 网络编程还是很重要的，不过UNP一书过于厚重了，重点也不够突出。对比之下，尹圣雨的这本《TCP/IP网络编程》就比较简单易读。 阅读时跳过"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/8n855/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="《TCP IP网络编程》学习笔记一"><meta property="og:description" content="前言 网络编程还是很重要的，不过UNP一书过于厚重了，重点也不够突出。对比之下，尹圣雨的这本《TCP/IP网络编程》就比较简单易读。 阅读时跳过"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/8n855/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-11-14T17:29:46+08:00"><meta property="article:modified_time" content="2021-11-14T17:29:46+08:00"><meta itemprop="name" content="《TCP IP网络编程》学习笔记一"><meta itemprop="description" content="前言 网络编程还是很重要的，不过UNP一书过于厚重了，重点也不够突出。对比之下，尹圣雨的这本《TCP/IP网络编程》就比较简单易读。 阅读时跳过"><meta itemprop="datePublished" content="2021-11-14T17:29:46+08:00"><meta itemprop="dateModified" content="2021-11-14T17:29:46+08:00"><meta itemprop="wordCount" content="4270"><meta itemprop="keywords" content="计算机网络,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="《TCP IP网络编程》学习笔记一"><meta name="twitter:description" content="前言 网络编程还是很重要的，不过UNP一书过于厚重了，重点也不够突出。对比之下，尹圣雨的这本《TCP/IP网络编程》就比较简单易读。 阅读时跳过"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">《TCP IP网络编程》学习笔记一</h1><div class="post-meta"><span class="post-time">2021-11-14</span>
+<span class="more-meta">约 4270 字</span>
+<span class="more-meta">预计阅读 9 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#前言">前言</a></li><li><a href="#理解网络编程和套接字">理解网络编程和套接字</a><ul><li><a href="#基于-linux-的文件操作">基于 Linux 的文件操作</a></li></ul></li><li><a href="#套接字类型与协议设置">套接字类型与协议设置</a><ul><li><a href="#协议族protocol-family">协议族（Protocol Family）</a></li><li><a href="#套接字类型type">套接字类型（Type）</a></li><li><a href="#协议">协议</a></li></ul></li><li><a href="#地址族与数据序列">地址族与数据序列</a><ul><li><a href="#表示-ipv4-地址的结构体">表示 IPV4 地址的结构体</a></li></ul></li><li><a href="#基于tcp的服务端和客户端">基于TCP的服务端和客户端</a></li><li><a href="#io复用">IO复用</a></li><li><a href="#epoll">epoll</a></li><li><a href="#线程创建及运行">线程创建及运行</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="前言">前言</h2><p>网络编程还是很重要的，不过UNP一书过于厚重了，重点也不够突出。对比之下，尹圣雨的这本《TCP/IP网络编程》就比较简单易读。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8n855/1636882525.png" alt="screenshot-20211114173525"></p><p>阅读时跳过了所有Windows实现的部分，只重点阅读部分章节并敲代码，代码GitHub：<a href="https://github.com/straicat/linux-learn/tree/master/tcpip-net">linux-learn/tcpip-net at master · jlice/linux-learn</a></p><h2 id="理解网络编程和套接字">理解网络编程和套接字</h2><p>服务端步骤：</p><p>第一步：调用 socket 函数创建套接字。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">socket</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int</span> <span class="n">protocol</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>第二步：调用 bind 函数分配IP地址和端口号。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">bind</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">myaddr</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>第三步：调用 listen 函数转换为可接受请求状态。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">listen</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">backlog</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>第四步：调用 accept 函数受理套接字请求。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">accept</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span><span class="n">socklen_t</span> <span class="o">*</span><span class="n">addrlen</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>客户端步骤：</p><p>一、调用 socket 函数 和 connect 函数</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">connect</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">serv_addr</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>二、与服务端共同运行以收发字符串数据</p><h3 id="基于-linux-的文件操作">基于 Linux 的文件操作</h3><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回文件描述符，失败时返回-1
+</span></span></span><span class="line"><span class="cl"><span class="cm">path : 文件名的字符串地址
+</span></span></span><span class="line"><span class="cl"><span class="cm">flag : 文件打开模式信息
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回写入的字节数 ，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">fd : 显示数据传输对象的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">buf : 保存要传输数据的缓冲值地址
+</span></span></span><span class="line"><span class="cl"><span class="cm">nbytes : 要传输数据的字节数
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回接收的字节数（但遇到文件结尾则返回 0），失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">fd : 显示数据接收对象的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">buf : 要保存接收的数据的缓冲地址值。
+</span></span></span><span class="line"><span class="cl"><span class="cm">nbytes : 要接收数据的最大字节数
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="套接字类型与协议设置">套接字类型与协议设置</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回文件描述符，失败时返回-1
+</span></span></span><span class="line"><span class="cl"><span class="cm">domain: 套接字中使用的协议族（Protocol Family）
+</span></span></span><span class="line"><span class="cl"><span class="cm">type: 套接字数据传输的类型信息
+</span></span></span><span class="line"><span class="cl"><span class="cm">protocol: 计算机间通信中使用的协议信息
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">socket</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int</span> <span class="n">protocol</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id="协议族protocol-family">协议族（Protocol Family）</h3><table><thead><tr><th>名称</th><th>协议族</th></tr></thead><tbody><tr><td><code>PF_INET</code></td><td>IPV4 互联网协议族</td></tr><tr><td><code>PF_INET6</code></td><td>IPV6 互联网协议族</td></tr><tr><td><code>PF_LOCAL</code></td><td>本地通信 Unix 协议族</td></tr><tr><td><code>PF_PACKET</code></td><td>底层套接字的协议族</td></tr><tr><td><code>PF_IPX</code></td><td>IPX Novel 协议族</td></tr></tbody></table><h3 id="套接字类型type">套接字类型（Type）</h3><p><strong>面向连接的套接字（<code>SOCK_STREAM</code>）</strong></p><ul><li>传输过程中数据不会消失</li><li>按序传输数据</li><li>传输的数据不存在数据边界（Boundary）</li></ul><p>可靠地、按序传递的、基于字节的面向连接的数据传输方式的套接字。</p><p>套接字缓冲已满是否意味着数据丢失？</p><p>答：缓冲并不总是满的。如果读取速度比数据传入过来的速度慢，则缓冲可能被填满，
+但是这时也不会丢失数据，因为传输套接字此时会停止数据传输，所以面向连接的套接字不会发生数据丢失。</p><p><strong>面向消息的套接字（<code>SOCK_DGRAM</code>）</strong></p><ul><li>强调快速传输而非传输有序</li><li>传输的数据可能丢失也可能损毁</li><li>传输的数据有边界</li><li>限制每次传输数据的大小</li></ul><p>不可靠的、不按序传递的、以数据的高速传输为目的套接字。</p><h3 id="协议">协议</h3><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// TCP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">tcp_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">PF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="n">IPPROTO_TCP</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// UDP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">udp_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">PF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">IPPROTO_UDP</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="地址族与数据序列">地址族与数据序列</h2><h3 id="表示-ipv4-地址的结构体">表示 IPV4 地址的结构体</h3><p>结构体的定义如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sin_family</span><span class="p">;</span>  <span class="c1">//地址族（Address Family）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint16_t</span> <span class="n">sin_port</span><span class="p">;</span>       <span class="c1">//16 位 TCP/UDP 端口号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">sin_addr</span><span class="p">;</span> <span class="c1">//32位 IP 地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">sin_zero</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>        <span class="c1">//不使用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></td></tr></table></div></div><p>in_addr 定义如下，它用来存放 32 位IP地址</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">in_addr</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">in_addr_t</span> <span class="n">s_addr</span><span class="p">;</span> <span class="c1">//32位IPV4地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>sockaddr_in 类型结构体变量serv_addr的用法：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">bind</span><span class="p">(</span><span class="n">serv_sock</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serv_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serv_addr</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sin_family</span><span class="p">;</span> <span class="c1">//地址族
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span>       <span class="c1">//地址信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>大端序（Big Endian）：高位字节存放到低位地址</li><li>小端序（Little Endian）：高位字节存放到高位地址</li></ul><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="nf">htons</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">short</span> <span class="nf">ntohs</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">htonl</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">ntohl</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>h 代表主机（host）字节序，n 代表网络（network）字节序，s 代表 short，l 代表 long</p><p>转换字符串形式的IP地址:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">in_addr_t</span> <span class="nf">inet_addr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 1 ，失败时返回 0
+</span></span></span><span class="line"><span class="cl"><span class="cm">string: 含有需要转换的IP地址信息的字符串地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">addr: 将保存转换结果的 in_addr 结构体变量的地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">inet_aton</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">,</span> <span class="k">struct</span> <span class="n">in_addr</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>把网络字节序整数型IP地址转换成我们熟悉的字符串形式:</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="nf">inet_ntoa</span><span class="p">(</span><span class="k">struct</span> <span class="n">in_addr</span> <span class="n">adr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 注意：返回类型为char指针，该函数在内部申请了内存并保存了字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 若再次调用该函数，则可能覆盖之前保存的字符串信息
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 因此，调用完该函数后，应立即将字符串信息复制到其它内存空间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">str_ptr</span> <span class="o">=</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">addr1</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="基于tcp的服务端和客户端">基于TCP的服务端和客户端</h2><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8n855/1636886260.png" alt="TCP服务端客户端函数调用顺序.drawio"></p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8n855/1636887375.png" alt="TCP函数调用关系.drawio"></p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">listen</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">backlog</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//成功时返回0，失败时返回-1
+</span></span></span><span class="line"><span class="cl"><span class="c1">//sock: 希望进入等待连接请求状态的套接字文件描述符，传递的描述符套接字参数称为服务端套接字
+</span></span></span><span class="line"><span class="cl"><span class="c1">//backlog: 连接请求等待队列的长度，若为5，则队列长度为5，表示最多使5个连接请求进入队列            
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">accept</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="o">*</span><span class="n">addrlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回文件描述符，失败时返回-1
+</span></span></span><span class="line"><span class="cl"><span class="cm">sock: 服务端套接字的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">addr: 保存发起连接请求的客户端地址信息的变量地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">addrlen: 的第二个参数addr结构体的长度，但是存放有长度的变量地址。
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">connect</span><span class="p">(</span><span class="kt">int</span> <span class="n">sock</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">servaddr</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回0，失败返回-1
+</span></span></span><span class="line"><span class="cl"><span class="cm">sock:客户端套接字文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">servaddr: 保存目标服务器端地址信息的变量地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">addrlen: 以字节为单位传递给第二个结构体参数 servaddr 的变量地址长度
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="io复用">IO复用</h2><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/8n855/1636887615.png" alt="select函数调用过程.drawio"></p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">FD_ZERO</span><span class="p">(</span><span class="n">fd_set</span> <span class="o">*</span><span class="n">fdset</span><span class="p">)</span><span class="err">：将</span> <span class="n">fd_set</span> <span class="err">变量所指的位全部初始化成</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span><span class="n">fd_set</span> <span class="o">*</span><span class="n">fdset</span><span class="p">)</span><span class="err">：在参数</span> <span class="n">fdset</span> <span class="err">指向的变量中注册文件描述符</span> <span class="n">fd</span> <span class="err">的信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_ISSET</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span><span class="n">fd_set</span> <span class="o">*</span><span class="n">fdset</span><span class="p">)</span><span class="err">：若参数</span> <span class="n">fdset</span> <span class="err">指向的变量中包含文件描述符</span> <span class="n">fd</span> <span class="err">的信息，则返回「真」</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_CLR</span><span class="p">(</span><span class="n">fd_set</span> <span class="o">*</span><span class="n">fdset</span><span class="p">)</span><span class="err">：用于在文件描述符集合中删除一个文件描述符。</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/select.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">select</span><span class="p">(</span><span class="kt">int</span> <span class="n">maxfd</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">readset</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">writeset</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">fd_set</span> <span class="o">*</span><span class="n">exceptset</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">timeval</span> <span class="o">*</span><span class="n">timeout</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回大于 0 的值，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">maxfd: 监视对象文件描述符数量
+</span></span></span><span class="line"><span class="cl"><span class="cm">readset: 将所有关注「是否存在待读取数据」的文件描述符注册到 fd_set 型变量，并传递其地址值。
+</span></span></span><span class="line"><span class="cl"><span class="cm">writeset: 将所有关注「是否可传输无阻塞数据」的文件描述符注册到 fd_set 型变量，并传递其地址值。
+</span></span></span><span class="line"><span class="cl"><span class="cm">exceptset: 将所有关注「是否发生异常」的文件描述符注册到 fd_set 型变量，并传递其地址值。
+</span></span></span><span class="line"><span class="cl"><span class="cm">timeout: 调用 select 函数后，为防止陷入无限阻塞的状态，传递超时(time-out)信息
+</span></span></span><span class="line"><span class="cl"><span class="cm">返回值: 发生错误时返回 -1,超时时返回0,。因发生关注的事件返回时，返回大于0的值，该值是发生事件的文件描述符数。
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="epoll">epoll</h2><p>下面是 <code>epoll</code> 函数的功能：</p><ul><li><code>epoll_create</code>：创建保存 epoll 文件描述符的空间</li><li><code>epoll_ctl</code>：向空间注册并注销文件描述符</li><li><code>epoll_wait</code>：与 select 函数类似，等待文件描述符发生变化</li></ul><p><code>epoll</code> 方式通过如下结构体 <code>epoll_event</code> 将发生变化的文件描述符单独集中在一起。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">epoll_event</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__uint32_t</span> <span class="n">events</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">epoll_data_t</span> <span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">union</span> <span class="n">epoll_data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__uint32_t</span> <span class="n">u32</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__uint64_t</span> <span class="n">u64</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">epoll_data_t</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table></div></div><p>声明足够大的 <code>epoll_event</code> 结构体数组后，传递给 <code>epoll_wait</code> 函数时，发生变化的文件描述符信息将被填入数组。因此，无需像 <code>select</code> 函数那样针对所有文件描述符进行循环。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">epoll_create</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 epoll 的文件描述符，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">size：epoll 实例的大小
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>Linux 2.6.8 之后的内核将完全忽略传入 <code>epoll_create</code> 函数的 size 函数</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">epoll_ctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">op</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 0 ，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">epfd：用于注册监视对象的 epoll 例程的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">op：用于制定监视对象的添加、删除或更改等操作
+</span></span></span><span class="line"><span class="cl"><span class="cm">fd：需要注册的监视对象文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">event：监视对象的事件类型
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>op:</p><ul><li><code>POLL_CTL_ADD</code>：将文件描述符注册到 epoll 例程</li><li><code>EPOLL_CTL_DEL</code>：从 epoll 例程中删除文件描述符</li><li><code>EPOLL_CTL_MOD</code>：更改注册的文件描述符的关注事件发生情况</li></ul><p>epoll_event.events:</p><ul><li><code>EPOLLIN</code>：需要读取数据的情况</li><li><code>EPOLLOUT</code>：输出缓冲为空，可以立即发送数据的情况</li><li><code>EPOLLPRI</code>：收到 OOB 数据的情况</li><li><code>EPOLLRDHUP</code>：断开连接或半关闭的情况，这在边缘触发方式下非常有用</li><li><code>EPOLLERR</code>：发生错误的情况</li><li><code>EPOLLET</code>：以边缘触发的方式得到事件通知</li><li><code>EPOLLONESHOT</code>：发生一次事件后，相应文件描述符不再收到事件通知。因此需要向 <code>epoll_ctl</code> 函数的第二个参数传递 <code>EPOLL_CTL_MOD</code> ，再次设置事件。</li></ul><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxevents</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回发生事件的文件描述符，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">epfd : 表示事件发生监视范围的 epoll 例程的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="cm">events : 保存发生事件的文件描述符集合的结构体地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">maxevents : 第二个参数中可以保存的最大事件数
+</span></span></span><span class="line"><span class="cl"><span class="cm">timeout : 以 1/1000 秒为单位的等待时间，传递 -1 时，一直等待直到发生事件
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id="线程创建及运行">线程创建及运行</h2><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">pthread_create</span><span class="p">(</span><span class="n">pthread_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="kr">thread</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                   <span class="k">const</span> <span class="n">pthread_attr_t</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">attr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                   <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">start_routine</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                   <span class="kt">void</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">arg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 0 ，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">thread : 保存新创建线程 ID 的变量地址值。线程与进程相同，也需要用于区分不同线程的 ID
+</span></span></span><span class="line"><span class="cl"><span class="cm">attr : 用于传递线程属性的参数，传递 NULL 时，创建默认属性的线程
+</span></span></span><span class="line"><span class="cl"><span class="cm">start_routine : 相当于线程 main 函数的、在单独执行流中执行的函数地址值（函数指针）
+</span></span></span><span class="line"><span class="cl"><span class="cm">arg : 通过第三个参数传递的调用函数时包含传递参数信息的变量地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">    //传递参数变量的地址给start_routine函数
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>线程相关代码编译时需要添加 <code>-lpthread</code> 选项声明需要连接到线程库</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">pthread_join</span><span class="p">(</span><span class="n">pthread_t</span> <span class="kr">thread</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">status</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 0 ，失败时返回 -1
+</span></span></span><span class="line"><span class="cl"><span class="cm">thread : 该参数值 ID 的线程终止后才会从该函数返回
+</span></span></span><span class="line"><span class="cl"><span class="cm">status : 保存线程的 main 函数返回值的指针变量地址值
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 线程不安全：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">hostent</span> <span class="o">*</span><span class="nf">gethostbyname</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">hostname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 线程安全
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">hostent</span> <span class="o">*</span><span class="nf">gethostbyname_r</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">struct</span> <span class="n">hostent</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                <span class="kt">int</span> <span class="n">intbuflen</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                <span class="kt">int</span> <span class="o">*</span><span class="n">h_errnop</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><p>线程安全函数结尾通常是 <code>_r</code> 。但是使用线程安全函数会给程序员带来额外的负担，可以通过以下方法自动将 <code>gethostbyname</code> 函数调用改为 <code>gethostbyname_r</code> 函数调用。</p><p>声明头文件前定义 <code>_REENTRANT</code> 宏。</p><p>无需特意更改源代码加，可以在编译的时候指定编译参数定义宏。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -D_REENTRANT mythread.c -o mthread -lpthread
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">pthread_mutex_init</span><span class="p">(</span><span class="n">pthread_mutex_t</span> <span class="o">*</span><span class="n">mutex</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                       <span class="k">const</span> <span class="n">pthread_mutexattr_t</span> <span class="o">*</span><span class="n">attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">pthread_mutex_destroy</span><span class="p">(</span><span class="n">pthread_mutex_t</span> <span class="o">*</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 0，失败时返回其他值
+</span></span></span><span class="line"><span class="cl"><span class="cm">mutex : 创建互斥量时传递保存互斥量的变量地址值，销毁时传递需要销毁的互斥量地址
+</span></span></span><span class="line"><span class="cl"><span class="cm">attr : 传递即将创建的互斥量属性，没有特别需要指定的属性时传递 NULL
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>进入临界区前调用的函数就是 <code>pthread_mutex_lock</code> 。调用该函数时，发现有其他线程已经进入临界区，则 <code>pthread_mutex_lock</code> 函数不会返回，直到里面的线程调用 <code>pthread_mutex_unlock</code> 函数退出临界区位置。也就是说，其他线程让出临界区之前，当前线程一直处于阻塞状态。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//临界区开始
+</span></span></span><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1">//临界区结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div></div><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">sem_post</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_wait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">成功时返回 0 ，失败时返回其他值
+</span></span></span><span class="line"><span class="cl"><span class="cm">sem : 传递保存信号量读取值的变量地址值，传递给 sem_post 的信号量增1，传递给 sem_wait 时信号量减一
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>调用 sem_init 函数时，操作系统将创建信号量对象，此对象中记录这「信号量值」（Semaphore Value）整数。该值在调用 sem_post 函数时增加 1 ，调用 wait_wait 函数时减一。但信号量的值不能小于 0 ，因此，在信号量为 0 的情况下调用 sem_wait 函数时，调用的线程将进入阻塞状态（因为函数未返回）。当然，此时如果有其他线程调用 sem_post 函数，信号量的值将变为 1 ，而原本阻塞的线程可以将该信号重新减为 0 并跳出阻塞状态。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sem_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem</span><span class="p">);</span><span class="c1">//信号量-1...
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 临界区的开始
+</span></span></span><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1">//临界区的结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_post</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sem</span><span class="p">);</span><span class="c1">//信号量+1...
+</span></span></span></code></pre></td></tr></table></div></div><p>如果一个线程结束运行但没有被join,则还有一部分资源没有被回收
+比如在Web服务器中当主线程为每个新来的链接创建一个子线程进行处理的时候，主线程并不希望因为调用pthread_join而阻塞（因为还要继续处理之后到来的链接），这时可以在子线程中加入代码</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">pthread_detach</span><span class="p">(</span><span class="n">pthread_self</span><span class="p">())</span> 
+</span></span></code></pre></td></tr></table></div></div><p>或者父线程调用</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">pthread_detach</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>  <span class="c1">//（非阻塞，可立即返回） 
+</span></span></span></code></pre></td></tr></table></div></div><p>这将该子线程的状态设置为detached,则该线程运行结束后会自动释放所有资源。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></div><nav class="post-nav"><a class="prev" href="/p/8odld/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Wireshark数据包分析实战学习笔记一</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/8ml2r/"><span class="next-text nav-default">PowerShell基于starship打造仿ys主题美化</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>

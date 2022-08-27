@@ -1,0 +1,54 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>【实验楼】Redis基础教程——学习笔记 - 木然轩 - 文剑木然的网络日志</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="文剑木然"><meta name="description" content="Redis数据类型 字符串 设置值：set key value 获取值：get key 没有相同key时才设置值：set key newval nx 拥有相同key时才设置值：set key newval xx 增加1"><meta name="keywords" content="文剑木然,木然轩,网络日志"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/7pzge/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="【实验楼】Redis基础教程——学习笔记"><meta property="og:description" content="Redis数据类型 字符串 设置值：set key value 获取值：get key 没有相同key时才设置值：set key newval nx 拥有相同key时才设置值：set key newval xx 增加1"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/7pzge/"><meta property="article:section" content="post"><meta property="article:published_time" content="2018-12-03T17:02:00+08:00"><meta property="article:modified_time" content="2018-12-03T17:02:00+08:00"><meta itemprop="name" content="【实验楼】Redis基础教程——学习笔记"><meta itemprop="description" content="Redis数据类型 字符串 设置值：set key value 获取值：get key 没有相同key时才设置值：set key newval nx 拥有相同key时才设置值：set key newval xx 增加1"><meta itemprop="datePublished" content="2018-12-03T17:02:00+08:00"><meta itemprop="dateModified" content="2018-12-03T17:02:00+08:00"><meta itemprop="wordCount" content="954"><meta itemprop="keywords" content="实验楼,Redis,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="【实验楼】Redis基础教程——学习笔记"><meta name="twitter:description" content="Redis数据类型 字符串 设置值：set key value 获取值：get key 没有相同key时才设置值：set key newval nx 拥有相同key时才设置值：set key newval xx 增加1"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">【实验楼】Redis基础教程——学习笔记</h1><div class="post-meta"><span class="post-time">2018-12-03</span>
+<span class="more-meta">约 954 字</span>
+<span class="more-meta">预计阅读 2 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content"><nav id="TableOfContents"><ul><li><ul><li><a href="#redis数据类型">Redis数据类型</a><ul><li><a href="#字符串">字符串</a></li><li><a href="#列表">列表</a></li><li><a href="#hash表">hash表</a></li><li><a href="#无序集合">无序集合</a></li><li><a href="#有序集合">有序集合</a></li></ul></li><li><a href="#redis系统管理">Redis系统管理</a></li><li><a href="#redis的高级应用">Redis的高级应用</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="redis数据类型">Redis数据类型</h2><h3 id="字符串">字符串</h3><p>设置值：<code>set key value</code>
+获取值：<code>get key</code>
+没有相同key时才设置值：<code>set key newval nx</code>
+拥有相同key时才设置值：<code>set key newval xx</code></p><p>增加1：<code>incr key</code>
+增加x：<code>incrby key x</code></p><p>同时设置多个值：<code>mset key1 value1 key2 value2</code>
+同时获取多个值：<code>mget key1 key2</code></p><h3 id="列表">列表</h3><p>PUSH: <code>lpush</code> 插入新元素到头部；<code>rpush</code> 插入新元素到尾部（一次可以push多个元素）
+POP: <code>lpop</code> 删除头部元素；<code>rpop</code> 删除尾部元素</p><p>查看列表所有元素：<code>lrange key 0 -1</code>
+清空列表元素/删除列表：<code>del key</code></p><h3 id="hash表">hash表</h3><p>HMSET命令设置一个多域的hash表：<code>hmset key k1 v1 k2 v2</code>
+HGET命令获取指定的单域：<code>hget key k1</code>
+HMGET命令获取指定的多域：<code>hmget key k1 k2</code>
+HGETALL命令获取指定key的所有信息：<code>hgetall key</code></p><p>可以根据需要对hash表的表项进行单独的操作，如HINCRBY：<code>hincrby key k1 x</code></p><h3 id="无序集合">无序集合</h3><p>无序集合不包含重复元素，添加、删除、测试元素存在：O(1)</p><p>向无序集合中添加元素：<code>sadd key x1 x2 x3</code>
+查看集合元素：<code>smembers key</code>
+查看集合是否包含元素x：<code>sismember key x</code></p><h3 id="有序集合">有序集合</h3><p>有序集合不包含重复元素，添加、删除、更新元素：O(logN)。有序集合需要元素评分来决定元素次序。</p><p>ZADD添加元素: <code>zadd key score value</code>
+ZRANGE查看元素：<code>zrange key 0 -1</code>
+ZREVRANGE逆序查看元素：<code>zrevrange key 0 -1</code>
+使用WITHSCORES参数返回评分：<code>zrange key 0 -1 withscores</code></p><h2 id="redis系统管理">Redis系统管理</h2><p><code>EXISTS</code> 判断key是否存在
+<code>DEL</code> 删除key
+<code>TYPE</code> 返回key元素的数据类型
+<code>KEYS</code> 返回通配符匹配的key列表
+<code>RANDOMKEY</code> 随机获得一个已经存在的key
+<code>CLEAR</code> 清屏
+<code>RENAME</code> 改key的名字，新键如果存在将被覆盖
+<code>RENAMENX</code> 改key的名字，新建如果存在则更新失败
+<code>DBSIZE</code> 返回当前数据库的key的总数</p><p><code>EXPIRE</code> 设置某个key的过期时间（秒），也可以在SET命令中设置过期时间：<code>set key value ex seconds</code>
+<code>TTL</code> 查询还有多长时间过期</p><p><code>FLUSHDB</code> 清空当前数据库中的所有键
+<code>FLUSHALL</code> 清空所有数据库中的所有键</p><p><code>CONFIG GET</code> 读取配置
+<code>CONFIG SET</code> 更改配置
+<code>AUTH</code> 使用密码认证
+<code>CONFIG RESETSTAT</code> 重置数据统计报告</p><p><code>INFO</code> 查询Redis相关信息</p><h2 id="redis的高级应用">Redis的高级应用</h2><p>认证方式：</p><ul><li>登录时 <code>redis-cli -a password</code></li><li>登录后 <code>auth password</code></li></ul><p>事务：</p><ul><li>开始事务：<code>multi</code></li><li>运行事务：<code>exec</code></li></ul><p>两种持久化方式：</p><ul><li>snapshotting（快照，默认方式）：将数据存放到文件</li><li>append-only file（aof）：将读写操作存放到文件中</li></ul><p><code>SAVE</code> 将数据写入磁盘</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E5%AE%9E%E9%AA%8C%E6%A5%BC/">实验楼</a>
+<a href="/tags/redis/">Redis</a></div><nav class="post-nav"><a class="prev" href="/p/7q0if/"><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">《SQL入门经典》学习笔记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class="next" href="/p/7p7cg/"><span class="next-text nav-default">Ubuntu深度学习CUDA环境安装配置指南</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>文剑木然</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-4c836197.js"></script></body></html>
