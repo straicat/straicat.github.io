@@ -89,7 +89,7 @@
 </span></span><span class="line"><span class="cl">11 2
 </span></span></code></pre></td></tr></table></div></div><p>输出</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">11
-</span></span></code></pre></td></tr></table></div></div><h3 id="题解-2">题解</h3><p>首先，需要对银行按位置排序。对于每家银行，找到其右侧符合距离限制的金额最大值。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7szz3/1552266183.jpg" alt></p><p>由于每次都需要某位置及其右侧的金额最大值，不妨先计算出来，存为后缀max数组。然后，对于每家银行，找到其右侧符合距离限制且最近的银行，取其后缀max数组的值，即右侧银行可获得的最大金额，并更新可获得的最大金额。</p><p>代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span></span></code></pre></td></tr></table></div></div><h3 id="题解-2">题解</h3><p>首先，需要对银行按位置排序。对于每家银行，找到其右侧符合距离限制的金额最大值。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/7szz3/936e786f32bd77f856764400f45f27098b33c7e3.jpg" alt></p><p>由于每次都需要某位置及其右侧的金额最大值，不妨先计算出来，存为后缀max数组。然后，对于每家银行，找到其右侧符合距离限制且最近的银行，取其后缀max数组的值，即右侧银行可获得的最大金额，并更新可获得的最大金额。</p><p>代码：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
