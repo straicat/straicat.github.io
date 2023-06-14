@@ -1,0 +1,125 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>一文了解布隆过滤器 - 木然轩</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="木然猫猫"><meta name="description" content="前言 判断某个元素是否在一个集合中在日常开发工作中十分常见，如判断用户是否重复注册、避免伪造不存在的记录导致缓存穿透、判断用户是否参加过某活动"><meta name="keywords" content="木然猫猫,木然轩,计算机"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/951oj/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link crossorigin="anonymous" integrity="sha384-PIbA/zVJy6+10NGzgoUJuAtvdc4oBIixlc+vhWHFc4qCJB32bWRvGzPA6YQhEWwx" href="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/custom-ed977ed4.css"><meta property="og:title" content="一文了解布隆过滤器"><meta property="og:description" content="前言 判断某个元素是否在一个集合中在日常开发工作中十分常见，如判断用户是否重复注册、避免伪造不存在的记录导致缓存穿透、判断用户是否参加过某活动"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/951oj/"><meta property="article:section" content="post"><meta property="article:published_time" content="2023-06-15T02:43:16+08:00"><meta property="article:modified_time" content="2023-06-15T02:43:16+08:00"><meta itemprop="name" content="一文了解布隆过滤器"><meta itemprop="description" content="前言 判断某个元素是否在一个集合中在日常开发工作中十分常见，如判断用户是否重复注册、避免伪造不存在的记录导致缓存穿透、判断用户是否参加过某活动"><meta itemprop="datePublished" content="2023-06-15T02:43:16+08:00"><meta itemprop="dateModified" content="2023-06-15T02:43:16+08:00"><meta itemprop="wordCount" content="1418"><meta itemprop="keywords" content="算法,"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="一文了解布隆过滤器"><meta name="twitter:description" content="前言 判断某个元素是否在一个集合中在日常开发工作中十分常见，如判断用户是否重复注册、避免伪造不存在的记录导致缓存穿透、判断用户是否参加过某活动"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--><meta property="editUrl" content="https://github.com/straicat/muranxuan.top/edit/master/content/post/2023/2023-06-15-一文了解布隆过滤器.md"></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">一文了解布隆过滤器</h1><div class="post-meta"><span class="post-time">2023-06-15</span>
+<span class="more-meta">约 1418 字</span>
+<span class="more-meta">预计阅读 3 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content always-active"><nav id="TableOfContents"><ul><li><ul><li><a href="#前言">前言</a></li><li><a href="#工作原理">工作原理</a></li><li><a href="#定量分析">定量分析</a></li><li><a href="#实现">实现</a></li><li><a href="#参考">参考</a></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="前言">前言</h2><p>判断某个元素是否在一个集合中在日常开发工作中十分常见，如判断用户是否重复注册、避免伪造不存在的记录导致缓存穿透、判断用户是否参加过某活动等。最直观的做法是使用HashSet，底层使用哈希表，但是哈希表在元素数量很大时需要占用非常大的空间。</p><p>布隆过滤器（Bloom Filter）是 1970 年由布隆提出的。它实际上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于判断一个元素<strong>一定不在</strong>某个集合中，以及一个元素<strong>可能在</strong>某个集合中，对于存在性它有一定的误判率。它的优点是空间效率和查询时间都远远超过一般的算法。</p><h2 id="工作原理">工作原理</h2><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/951oj/74985766a76d501275044221db3cad7702732ba2.png" alt="image"></p><p>布隆过滤器的工作原理是：</p><ul><li>当一个元素加入集合时，通过k个哈希函数将该元素映射到bit数组的k个位置，并将这些bit置为1</li><li>检索时，将检索的元素同样映射到bit数组的k个位置，如果其中存在某个位置的bit不为1，那么检索的元素一定不存在于集合中，否则可能存在。</li></ul><p>布隆过滤器的优点是：占用空间极小，且插入与查询的时间复杂度均为常数级别，效率高。</p><p>布隆过滤器的缺点是：判断存在时有一定的误判率；无法删除元素。</p><h2 id="定量分析">定量分析</h2><p>优化，后面实现用到的优化都要在定量分析中体现。</p><p>下面定量分析布隆过滤器的误判率。设：</p><ul><li><code>m</code> ：bit数组的长度</li><li><code>k</code> ：哈希函数的个数</li><li><code>n</code> ：插入元素的个数</li><li><code>p</code> ：误判率</li></ul><p>假设哈希函数是均匀的，那么每个元素映射到bit数组中每个bit位的概率都是1/m。</p><p>插入一个元素时，由于要经过k个哈希函数，所以对于bit数组中某一个bit位，该位置没有置为1的概率是：</p><div>$$P_1 = (1-\frac{1}{m})^k$$</div><p>插入n个元素后，该位置仍然没有置为1的概率是：</p><div>$$P_2 = (1-\frac{1}{m})^{kn}$$</div><p>也就是，插入n个元素后，该位置被置为1的概率是：</p><div>$$P_3 = 1 - P_2 = 1 - (1-\frac{1}{m})^{kn}$$</div><p>那么k个位置均被置为1的概率是：</p><div>$$p = P_3^k = [1-(1-\frac{1}{m})^{kn}]^k$$</div><p>这个概率便是误判率。</p><p>由于$\lim_{x \to \infty} (1 + \frac{1}{x})^{x} = e$，所以上式可以近似为：</p><div>$$p\approx(1-e^{-\frac{kn}{m}})^k$$</div><p>p可以看成是k的函数，令$t = e^{\frac n m}$，考虑关于k的函数：</p><div>$$f(k) = (1-t^{-k})^k$$</div><p>该函数图像如下：</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/951oj/feb8026303a9003315923e26ac651e43c75d2b80.png" alt="image"></p><p>两边同时取自然对数并求导：</p><div>$$\frac{1}{f(k)}f^{'}(k) = \ln(1-t^{-k}) + \frac{kt^{-k}\ln t}{1-t^{-k}}$$</div><p>令$f^{&rsquo;}(k) = 0$，即：</p><div>$$\ln(1-t^{-k}) + \frac{kt^{-k}\ln t}{1-t^{-k}} = 0$$</div><p>令$x=t^{-k}$，即$\ln{x}=-k\ln{t}$，上式可化简为：</p><div>$$(1-x)\ln(1-x)=x\ln{x}$$</div><p>故$x=\frac{1}{2}$，于是：</p><div>$$k = \frac{m}{n}\ln{2}$$</div><p>此时，布隆过滤器的误判率最低。将此时的k代入误判率的公式中可得：</p><div>$$m = \frac{-n\ln{p}}{(\ln{2})^2}$$</div><h2 id="实现">实现</h2><p>Java中可以使用<code>BitSet</code> 作为bit数组。布隆过滤器的Java实现：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.google.common.hash.Hashing</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.nio.charset.StandardCharsets</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.BitSet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BloomFilter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">n</span><span class="o">,</span> <span class="n">m</span><span class="o">,</span> <span class="n">k</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">double</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">BitSet</span> <span class="n">bits</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">BloomFilter</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">,</span> <span class="kt">double</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">m</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(-</span><span class="n">n</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">p</span><span class="o">)</span> <span class="o">/</span> <span class="o">(</span><span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">2</span><span class="o">)</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">k</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">((</span><span class="kt">double</span><span class="o">)</span> <span class="n">m</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">2</span><span class="o">)));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">bits</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BitSet</span><span class="o">(</span><span class="n">m</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">hash</span> <span class="o">=</span> <span class="n">Hashing</span><span class="o">.</span><span class="na">murmur3_128</span><span class="o">().</span><span class="na">hashString</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">).</span><span class="na">asLong</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">h1</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">hash</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">h2</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">hash</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">32</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">h1</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">h2</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">h</span> <span class="o">=</span> <span class="o">~</span><span class="n">h</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">bits</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">h</span> <span class="o">%</span> <span class="n">m</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">contains</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">hash</span> <span class="o">=</span> <span class="n">Hashing</span><span class="o">.</span><span class="na">murmur3_128</span><span class="o">().</span><span class="na">hashString</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">).</span><span class="na">asLong</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">h1</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">hash</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">h2</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">hash</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">32</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">h1</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">h2</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">h</span> <span class="o">=</span> <span class="o">~</span><span class="n">h</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(!</span><span class="n">bits</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">h</span> <span class="o">%</span> <span class="n">m</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意：Java中，<code>Math.log</code>是以自然对数，也就是以<code>e</code>为底，而<code>Math.log10</code>才是以10为底的对数。</p><p>在论文<a href="https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf">《Bloom Filters in Probabilistic Verification》</a>中指出：尽管布隆过滤器需要k个哈希函数，但其实可以通过两个哈希值来计算，达到k个哈希函数的效果。</p><p>布隆过滤器的参数设置可以使用在线网站<a href="https://hur.st/bloomfilter/">Bloom filter calculator</a> 方便进行参数评估。</p><h2 id="参考">参考</h2><ul><li><a href="https://sunyunqiang.com/blog/bloom_filter/">21. 布隆过滤器 (Bloom Filter) 的原理 - 孙同学博客</a></li><li><a href="https://github.com/google/guava/blob/master/guava/src/com/google/common/hash/BloomFilter.java">guava/guava/src/com/google/common/hash/BloomFilter.java at master · google/guava · GitHub</a></li><li><a href="https://zhuanlan.zhihu.com/p/85042394">结合Guava源码解读布隆过滤器 - 知乎</a></li><li><a href="https://juejin.cn/post/7038779056996745224">详解布隆过滤器的原理和实现 - 掘金</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E7%AE%97%E6%B3%95/">算法</a></div><nav class="post-nav"><a class="next" href="/p/950iu/"><span class="next-text nav-default">一文了解一致性哈希</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>木然猫猫</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script crossorigin="anonymous" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" src="https://lib.baomitu.com/jquery/3.2.1/jquery.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wEpzWQjx2cAZH0dWbs0yERz/XdefbIlX5blnSszkdz74KNvkYtwawfCkfmoNgkgu" src="https://lib.baomitu.com/slideout/1.0.1/slideout.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-/KW95nVynfwuFdnC4bvJaEQl1ofFOKDm2+IMq+KXhojg4YXyJ/8Fa50AtFMy9POi" src="https://lib.baomitu.com/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script type="text/javascript">window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+<script id="baidu_analytics">var _hmt=_hmt||[];(function(){if(window.location.hostname==="localhost")return;var t,e=document.createElement("script");e.async=!0,e.src="https://hm.baidu.com/hm.js?c7fb717ef5f3ae5fea89edf439acd013",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script><script src="/js/custom-2bbf1383.js"></script></body></html>
