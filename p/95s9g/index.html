@@ -1,0 +1,206 @@
+<!doctype html><html lang="zh-cn"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1"><title>谷歌Guava限流器的设计与实现 - 木然轩</title><meta name="renderer" content="webkit"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv="cache-control" content="no-transform"><meta http-equiv="cache-control" content="no-siteapp"><meta name="theme-color" content="#f8f5ec"><meta name="msapplication-navbutton-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec"><meta name="author" content="木然猫猫"><meta name="description" content="介绍 谷歌Guava工具包提供了一个单机限流工具，它基于令牌桶算法实现，主要被用于限制访问资源的速度。 Guava限流器的简单使用例子： 1 2 3 4"><meta name="keywords" content="木然猫猫,木然轩,计算机"><meta name="generator" content="Hugo 0.101.0 with theme even"><link rel="canonical" href="https://muranxuan.top/p/95s9g/"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/manifest.json"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet"><link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/fancybox/3.5.7/jquery.fancybox.min.css" type="text/css" rel="stylesheet"><link rel="stylesheet" href="/css/custom.css"><meta property="og:title" content="谷歌Guava限流器的设计与实现"><meta property="og:description" content="介绍 谷歌Guava工具包提供了一个单机限流工具，它基于令牌桶算法实现，主要被用于限制访问资源的速度。 Guava限流器的简单使用例子： 1 2 3 4"><meta property="og:type" content="article"><meta property="og:url" content="https://muranxuan.top/p/95s9g/"><meta property="article:section" content="post"><meta property="article:published_time" content="2023-07-09T00:52:15+08:00"><meta property="article:modified_time" content="2023-07-09T00:52:15+08:00"><meta itemprop="name" content="谷歌Guava限流器的设计与实现"><meta itemprop="description" content="介绍 谷歌Guava工具包提供了一个单机限流工具，它基于令牌桶算法实现，主要被用于限制访问资源的速度。 Guava限流器的简单使用例子： 1 2 3 4"><meta itemprop="datePublished" content="2023-07-09T00:52:15+08:00"><meta itemprop="dateModified" content="2023-07-09T00:52:15+08:00"><meta itemprop="wordCount" content="2405"><meta itemprop="keywords" content><meta name="twitter:card" content="summary"><meta name="twitter:title" content="谷歌Guava限流器的设计与实现"><meta name="twitter:description" content="介绍 谷歌Guava工具包提供了一个单机限流工具，它基于令牌桶算法实现，主要被用于限制访问资源的速度。 Guava限流器的简单使用例子： 1 2 3 4"><!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script><![endif]--></head><body><div id="mobile-navbar" class="mobile-navbar"><div class="mobile-header-logo"><a href="/" class="logo">木然轩</a></div><div class="mobile-navbar-icon"><span></span>
+<span></span>
+<span></span></div></div><nav id="mobile-menu" class="mobile-menu slideout-menu"><ul class="mobile-menu-list"><a href="/"><li class="mobile-menu-item">主页</li></a><a href="/post/"><li class="mobile-menu-item">归档</li></a><a href="/tags/"><li class="mobile-menu-item">标签</li></a><a href="/about/"><li class="mobile-menu-item">关于</li></a></ul></nav><div class="container" id="mobile-panel"><header id="header" class="header"><div class="logo-wrapper"><a href="/" class="logo">木然轩</a></div><nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item"><a class="menu-item-link" href="/">主页</a></li><li class="menu-item"><a class="menu-item-link" href="/post/">归档</a></li><li class="menu-item"><a class="menu-item-link" href="/tags/">标签</a></li><li class="menu-item"><a class="menu-item-link" href="/about/">关于</a></li></ul></nav></header><main id="main" class="main"><div class="content-wrapper"><div id="content" class="content"><article class="post"><header class="post-header"><h1 class="post-title">谷歌Guava限流器的设计与实现</h1><div class="post-meta"><span class="post-time">2023-07-09</span>
+<span class="more-meta">约 2405 字</span>
+<span class="more-meta">预计阅读 5 分钟</span></div></header><div class="post-toc" id="post-toc"><h2 class="post-toc-title">文章目录</h2><div class="post-toc-content always-active"><nav id="TableOfContents"><ul><li><ul><li><a href="#介绍">介绍</a></li><li><a href="#令牌桶算法">令牌桶算法</a><ul><li><a href="#原理与特性">原理与特性</a></li><li><a href="#实现">实现</a></li></ul></li><li><a href="#桶内令牌发放时间">桶内令牌发放时间</a><ul><li><a href="#突发模式">突发模式</a></li><li><a href="#预热模式">预热模式</a></li></ul></li></ul></li></ul></nav></div></div><div class="post-content"><h2 id="介绍">介绍</h2><p>谷歌Guava工具包提供了一个单机限流工具，它基于令牌桶算法实现，主要被用于限制访问资源的速度。</p><p>Guava限流器的简单使用例子：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 每秒2个令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">RateLimiter</span> <span class="n">rateLimiter</span> <span class="o">=</span> <span class="n">RateLimiter</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">2</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">DateTimeFormatter</span> <span class="n">dateTimeFormatter</span> <span class="o">=</span> <span class="n">DateTimeFormatter</span><span class="o">.</span><span class="na">ofPattern</span><span class="o">(</span><span class="s">&#34;HH:mm:ss.SSS&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 阻塞式获取1个令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rateLimiter</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">().</span><span class="na">format</span><span class="o">(</span><span class="n">dateTimeFormatter</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其输出如下：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-Plain" data-lang="Plain"><span class="line"><span class="cl">23:49:48.131
+</span></span><span class="line"><span class="cl">23:49:48.132
+</span></span><span class="line"><span class="cl">23:49:48.132
+</span></span><span class="line"><span class="cl">23:49:48.628
+</span></span><span class="line"><span class="cl">23:49:49.127
+</span></span><span class="line"><span class="cl">23:49:49.627
+</span></span><span class="line"><span class="cl">23:49:50.128
+</span></span><span class="line"><span class="cl">23:49:50.628
+</span></span><span class="line"><span class="cl">23:49:51.128
+</span></span><span class="line"><span class="cl">23:49:51.627
+</span></span></code></pre></td></tr></table></div></div><p>Guava限流器有两种模式：突发模式与预热模式。默认是突发模式，它可以在空闲状态下保存一部分令牌，用于后续处理突发请求，从而避免大量阻塞或拒绝。预热模式适合大流量场景，可以让服务端从空闲状态平滑过渡到高负载状态。</p><h2 id="令牌桶算法">令牌桶算法</h2><h3 id="原理与特性">原理与特性</h3><p>令牌桶算法是一种针对请求速度的限流算法，核心是一个令牌桶，桶内令牌数量以固定速度增长，每个请求都需要从桶中获取到足够的令牌后才能被放行，否则就会被阻塞或拒绝。只需要设置令牌的生成速度，令牌桶算法就能通过令牌发放来限制请求通过的速度。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/95s9g/44372dcd0fb9e04ac127c6ad4cb4d60b00bcb287.png" alt="image"></p><p>令牌桶算法有两个重要特性：流量整形、方便处理突发流量。</p><p>流量整形是指令牌桶算法将原本不规则的流量在经过限流器后变得平滑且均匀。流量整形的效果有利于服务端的稳定运行，类似MQ的削峰填谷手段。经过流量整形后，服务端能以稳定的状态接收并处理请求。</p><p>突发流量是指随机出现的、短时间的流量突刺。如果严格遵循流量整形，在遇到突发流量时会突然拒绝一大批请求，如果客户端有重试机制还可能导致进一步恶化。因此，如果服务端资源充足，限流器应具有一定的弹性，允许服务端处理一些突发请求。</p><p>在令牌桶算法模型中，可以通过给桶内生成的令牌设置有效期即可实现对于突发流量的弹性处理。有突发流量时，限流器可以使用有效期内的剩余令牌来通过更多请求，从而临时提高服务端的处理效率，避免大量请求被拒绝。</p><h3 id="实现">实现</h3><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/95s9g/424ffdedce557bfe06c93fc8f1f66fe672ee45fa.png" alt="image"></p><p>Guava限流器以一种简洁的方式实现了令牌桶算法，它的核心思想是计算令牌桶算法中令牌数量与时间的线性关系。在空闲情况下，桶内令牌数量会以预设的速度稳定增加，通过最近一次通过请求的时间以及剩余令牌的数量，可以计算出后续任意时间点的令牌数量，如图中的公式所示。</p><p>基于上述公式，Guava限流器可以在请求到达时计算出当前的令牌桶状态，然后计算出何时可以通过请求。</p><p>令牌桶的实现位于<code>com.google.common.util.concurrent.SmoothRateLimiter#reserveEarliestAvailable</code> ：</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 令牌桶算法
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param requiredPermits 请求所需的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param nowMicros 当前时间
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 可以放行请求的时间点
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">final</span> <span class="kt">long</span> <span class="nf">reserveEarliestAvailable</span><span class="o">(</span><span class="kt">int</span> <span class="n">requiredPermits</span><span class="o">,</span> <span class="kt">long</span> <span class="n">nowMicros</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 计算令牌桶内的令牌数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">resync</span><span class="o">(</span><span class="n">nowMicros</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 返回何时可以通过请求
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">long</span> <span class="n">returnValue</span> <span class="o">=</span> <span class="n">nextFreeTicketMicros</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 消耗的令牌数 = min(需要的令牌数, 桶内存储的令牌)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">storedPermitsToSpend</span> <span class="o">=</span> <span class="n">min</span><span class="o">(</span><span class="n">requiredPermits</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">storedPermits</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 桶内令牌数不足，还需要新的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">freshPermits</span> <span class="o">=</span> <span class="n">requiredPermits</span> <span class="o">-</span> <span class="n">storedPermitsToSpend</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 等待时间 = 桶内令牌发放时间 + 后续生成令牌所需时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 后续生成令牌所需时间 = 还需要新的令牌数 * 请求时间间隔
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">long</span> <span class="n">waitMicros</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="n">storedPermitsToWaitTime</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">storedPermits</span><span class="o">,</span> <span class="n">storedPermitsToSpend</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="o">+</span> <span class="o">(</span><span class="kt">long</span><span class="o">)</span> <span class="o">(</span><span class="n">freshPermits</span> <span class="o">*</span> <span class="n">stableIntervalMicros</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 下一个请求允许的时间点 += 等待时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">this</span><span class="o">.</span><span class="na">nextFreeTicketMicros</span> <span class="o">=</span> <span class="n">LongMath</span><span class="o">.</span><span class="na">saturatedAdd</span><span class="o">(</span><span class="n">nextFreeTicketMicros</span><span class="o">,</span> <span class="n">waitMicros</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 桶内存储的令牌 -= 消耗的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">this</span><span class="o">.</span><span class="na">storedPermits</span> <span class="o">-=</span> <span class="n">storedPermitsToSpend</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 返回增加等待时间之前的请求允许的时间点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">returnValue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">resync</span><span class="o">(</span><span class="kt">long</span> <span class="n">nowMicros</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// nextFreeTicketMicros 的含义是下一个请求允许的时间点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 如果当前时间比 nextFreeTicketMicros 晚，说明这期间空闲（冷状态），可以生成一些令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">nowMicros</span> <span class="o">&gt;</span> <span class="n">nextFreeTicketMicros</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 空闲时间内生成的令牌数 = (当前时间 - 请求允许的时间) / 空闲状态令牌生成时间间隔
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="n">newPermits</span> <span class="o">=</span> <span class="o">(</span><span class="n">nowMicros</span> <span class="o">-</span> <span class="n">nextFreeTicketMicros</span><span class="o">)</span> <span class="o">/</span> <span class="n">coolDownIntervalMicros</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 桶内令牌数 = min(桶容量, 剩余令牌数 + 空闲时间内生成的令牌数)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">storedPermits</span> <span class="o">=</span> <span class="n">min</span><span class="o">(</span><span class="n">maxPermits</span><span class="o">,</span> <span class="n">storedPermits</span> <span class="o">+</span> <span class="n">newPermits</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nextFreeTicketMicros</span> <span class="o">=</span> <span class="n">nowMicros</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>两个主要的计算步骤：先计算当前令牌桶中令牌数量，再计算发放足够令牌需要的时间。</p><p>上述令牌桶计算过程有一个请求阻塞等待的优化，即返回的放行时间是增加等待时间<code>waitMicros</code> 之前的时间。这样的效果是阻塞等待不会影响当前请求，而是影响后续等待时间内到达的请求。例如，对于1QPS的限流器，收到一个需要100个令牌才能通过的请求，会先放行这个请求，之后100秒内阻塞后续到达的请求，而不是直接阻塞当前请求100秒再放行。这种“赊账”机制能够以更小的阻塞代价达到同样的限流效果。</p><h2 id="桶内令牌发放时间">桶内令牌发放时间</h2><p>桶内令牌发放时间由限流器的模式决定，Guava限流器包含突发模式和预热模式，有着不同的桶内令牌发放模型。</p><h3 id="突发模式">突发模式</h3><p>突发模式下，桶内令牌可以直接发放，故桶内令牌发放时间为0。</p><p>在空闲状态下，桶内令牌也以<code>stableInterval</code> 时间间隔匀速增加。</p><h3 id="预热模式">预热模式</h3><p>预热模式下，限流器通过请求的速度会随着流量的上涨而逐渐加快，以让服务端平滑地从空闲状态过渡到高负载状态。</p><p>下图为Guava限流器所定义的预热模型，限流器令牌生成的时间间隔（纵轴）与令牌桶内的令牌数量（横轴）相关：当桶内令牌较多时，说明此时流量较小，限流器处于冷状态，令牌生成速度较慢，令牌生成间隔为<code>cold interval</code> ；当流量变大时，桶内令牌被消耗，令牌生成间隔缩短，限流器逐渐转为热状态，直到桶内令牌数耗到<code>thresholdPermits</code> 及以下时，限流器处于热状态，令牌生成间隔为<code>stable interval</code> ，进入稳定状态。</p><p><img src="https://raw.githubusercontent.com/straicat/blog-assets/master/img/95s9g/291728eb428ba26de79ef98dab3ae977a34bffd8.png" alt="image"></p><p>了解预热模型之后，就可以计算桶内令牌发放时间了。假设请求通过需要的令牌数在预热期间即可满足，那么桶内令牌发放时间即为图中的梯形的面积。否则，只需要再加上稳定状态期间矩形的面积即可。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">long</span> <span class="nf">storedPermitsToWaitTime</span><span class="o">(</span><span class="kt">double</span> <span class="n">storedPermits</span><span class="o">,</span> <span class="kt">double</span> <span class="n">permitsToTake</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">availablePermitsAboveThreshold</span> <span class="o">=</span> <span class="n">storedPermits</span> <span class="o">-</span> <span class="n">thresholdPermits</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">micros</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 说明当前令牌桶处于预热状态，计算梯形面积
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">availablePermitsAboveThreshold</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">.</span><span class="na">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 预热状态需要的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="n">permitsAboveThresholdToTake</span> <span class="o">=</span> <span class="n">min</span><span class="o">(</span><span class="n">availablePermitsAboveThreshold</span><span class="o">,</span> <span class="n">permitsToTake</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 梯形的上底+下底
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="n">length</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">                <span class="n">permitsToTime</span><span class="o">(</span><span class="n">availablePermitsAboveThreshold</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">+</span> <span class="n">permitsToTime</span><span class="o">(</span><span class="n">availablePermitsAboveThreshold</span> <span class="o">-</span> <span class="n">permitsAboveThresholdToTake</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 梯形面积 = (上底 + 下底) * 高 / 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">micros</span> <span class="o">=</span> <span class="o">(</span><span class="kt">long</span><span class="o">)</span> <span class="o">(</span><span class="n">permitsAboveThresholdToTake</span> <span class="o">*</span> <span class="n">length</span> <span class="o">/</span> <span class="n">2</span><span class="o">.</span><span class="na">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">permitsToTake</span> <span class="o">-=</span> <span class="n">permitsAboveThresholdToTake</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 令牌桶预热完毕，计算稳定状态矩形面积
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">micros</span> <span class="o">+=</span> <span class="o">(</span><span class="kt">long</span><span class="o">)</span> <span class="o">(</span><span class="n">stableIntervalMicros</span> <span class="o">*</span> <span class="n">permitsToTake</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">micros</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 根据令牌数计算间隔时间。
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param permits 预热状态下的令牌数，也就是以 thresholdPermits 为原点的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return 对应的间隔时间，也就是纵轴的值
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="kt">double</span> <span class="nf">permitsToTime</span><span class="o">(</span><span class="kt">double</span> <span class="n">permits</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">stableIntervalMicros</span> <span class="o">+</span> <span class="n">permits</span> <span class="o">*</span> <span class="n">slope</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在空闲状态下，桶内令牌匀速增加，增加至<code>maxPermits</code>需要的时间为<code>warmupPeriod</code> 。</p><div class="highlight"><div class="chroma"><table class="lntable"><tr><td class="lntd"><pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td><td class="lntd"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">double</span> <span class="nf">coolDownIntervalMicros</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">warmupPeriodMicros</span> <span class="o">/</span> <span class="n">maxPermits</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div></div></div><footer class="post-footer"><nav class="post-nav"><a class="next" href="/p/95h2z/"><span class="next-text nav-default">安卓通过Magisk修补镜像刷入root</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src="https://utteranc.es/client.js" repo="straicat/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script><noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript></div></main><footer id="footer" class="footer"><div class="social-links"><a href="mailto:1121672253@qq.com" class="iconfont icon-email" title="email"></a>
+<a href="https://github.com/straicat" class="iconfont icon-github" title="github"></a>
+<a href="https://www.zhihu.com/people/wjmr" class="iconfont icon-zhihu" title="zhihu"></a>
+<a href="https://space.bilibili.com/4583328" class="iconfont icon-bilibili" title="bilibili"></a>
+<a href="https://muranxuan.top/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a></div><div class="copyright"><span class="power-by">由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动</span>
+<span class="division">|</span>
+<span class="theme-info">主题 -
+<a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a></span>
+<span class="copyright-year">&copy;
+2015 -
+2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>木然猫猫</span></span></div></footer><div class="back-to-top" id="back-to-top"><i class="iconfont icon-up"></i></div></div><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/slideout/1.0.1/slideout.min.js" type="application/javascript"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/fancybox/3.5.7/jquery.fancybox.min.js" type="application/javascript"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+<script src="/js/custom.js"></script></body></html>
